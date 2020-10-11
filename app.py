@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------#
 
 from flask import Flask, render_template, request
-# from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -15,7 +15,7 @@ import os
 
 app = Flask(__name__)
 app.config.from_object('config')
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 # Automatically tear down SQLAlchemy.
 '''
@@ -46,8 +46,15 @@ def home():
     return render_template('pages/placeholder.home.html')
 
 
+
 @app.route('/about')
 def about():
+    # query  = 'insert into User values (3, %s )' % "'superman'"
+    # db.engine.execute(query)
+    # r = db.engine.execute('select * from User')
+    # s = ""
+    # for i in r:
+    #     s += i['name'] # This works if we wanna use a dict format, and tuples also work.
     return render_template('pages/placeholder.about.html')
 
 

@@ -11,4 +11,4 @@ DEBUG = True
 SECRET_KEY = 'my precious'
 
 # Connect to the database
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+SQLALCHEMY_DATABASE_URI = 'mysql://sqlgods:=k}2gsJU9{Qv+h?W@vcm-16314.vm.duke.edu/GymReservation'
