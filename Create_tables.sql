@@ -8,20 +8,17 @@ AccountCreated DATETIME NOT NULL
 CREATE TABLE Resources 
 (ResourceID INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 ResourceName VARCHAR(256), 
-ResourceType VARCHAR(256) NOT NULL CHECK(ResourceName IN ('Space','Equipment')), 
-Location VARCHAR(256) NOT NULL CHECK(ResourceName IN ('Wilson','Brodie'))
+ResourceType VARCHAR(256) NOT NULL CHECK(ResourceType IN ('Space','Equipment')), 
+Location VARCHAR(256) NOT NULL CHECK(Location IN ('Wilson','Brodie'))
 );
 
 CREATE TABLE Bookings
 (BookingID INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-UserID INTEGER NOT NULL, 
+UserID INTEGER NOT NULL FOREIGN KEY REFERENCES User(ID), 
 DateBookedOn DATE NOT NULL, 
 TimeBookedAt TIME NOT NULL, 
-ResourceID INTEGER NOT NULL, 
-ResourceType VARCHAR(256),
-FOREIGN KEY (UserID) REFERENCES User(ID),
-FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID),
-FOREIGN KEY (ResourceType) REFERENCES Resources(ResourceType)
+ResourceID INTEGER NOT NULL FOREIGN KEY REFERENCES Resources(ResourceID), 
+ResourceType VARCHAR(256) FOREIGN KEY REFERENCES Resources(ResourceType)
 );
 
 CREATE TABLE ClassSchedule
@@ -38,5 +35,8 @@ UserID INTEGER NOT NULL,
 ClassDate INTEGER NOT NULL,
 PRIMARY KEY (ClassID, UserID, ClassDate),
 FOREIGN KEY (ClassID) REFERENCES ClassSchedule(ClassID),
-FOREIGN KEY (CUserID) REFERENCES User(ID),
+FOREIGN KEY (UserID) REFERENCES User(ID)
 );
+
+
+
