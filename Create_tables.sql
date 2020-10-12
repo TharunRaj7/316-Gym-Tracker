@@ -12,6 +12,14 @@ ResourceType VARCHAR(256) NOT NULL CHECK(ResourceType IN ('Space','Equipment')),
 Location VARCHAR(256) NOT NULL CHECK(Location IN ('Wilson','Brodie'))
 );
 
+CREATE TABLE ClassSchedule
+(ClassID       INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+ ClassDay      VARCHAR(256) NOT NULL, 
+ ClassTime     TIME NOT NULL, 
+ ClassLocation VARCHAR(256) NOT NULL, 
+ EnrollmentCap INTEGER
+);
+
 CREATE TABLE Bookings
 (BookingID    INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, 
  UserID       INTEGER NOT NULL, 
@@ -29,20 +37,13 @@ ALTER TABLE Bookings
 ADD FOREIGN KEY ResourceType REFERENCES Resources(ResourceType);
 
 
-CREATE TABLE ClassSchedule
-(ClassID       INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, 
- ClassDay      VARCHAR(256) NOT NULL, 
- ClassTime     TIME NOT NULL, 
- ClassLocation VARCHAR(256) NOT NULL, 
- EnrollmentCap INTEGER
-);
-
-
 CREATE TABLE Enrollments
 (ClassID   INTEGER NOT NULL, 
  UserID    INTEGER NOT NULL, 
  ClassDate INTEGER NOT NULL,
  PRIMARY KEY(ClassID, UserID, ClassDate), 
- FOREIGN KEY(ClassID) REFERENCES ClassSchedule(ClassID), 
- FOREIGN KEY(UserID) REFERENCES User(ID), 
+ FOREIGN KEY(ClassID) REFERENCES ClassSchedule(ClassID)
 );
+
+ALTER TABLE Enrollments
+ADD FOREIGN KEY (UserID) REFERENCES User(ID);
