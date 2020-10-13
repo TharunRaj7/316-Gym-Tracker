@@ -14,6 +14,7 @@ Location VARCHAR(256) NOT NULL CHECK(Location IN ('Wilson','Brodie'))
 
 CREATE TABLE ClassSchedule
 (ClassID       INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+ ClassType VARCHAR(256) NOT NULL, 
  ClassDay      VARCHAR(256) NOT NULL, 
  ClassTime     TIME NOT NULL, 
  ClassLocation VARCHAR(256) NOT NULL, 
@@ -26,15 +27,10 @@ CREATE TABLE Bookings
  DateBookedOn DATE NOT NULL, 
  TimeBookedAt TIME NOT NULL, 
  ResourceID   INTEGER NOT NULL, 
- ResourceType VARCHAR(256) NOT NULL,
- FOREIGN KEY (UserID) REFERENCES User(ID)
+ ResourceType VARCHAR(256) NOT NULL REFERENCES Resources(ResourceType),
+ FOREIGN KEY (UserID) REFERENCES User(ID),
+ FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID)
 );
-
-ALTER TABLE Bookings
-ADD FOREIGN KEY ResourceID REFERENCES Resources(ResourceID);
-
-ALTER TABLE Bookings
-ADD FOREIGN KEY ResourceType REFERENCES Resources(ResourceType);
 
 
 CREATE TABLE Enrollments
@@ -42,8 +38,7 @@ CREATE TABLE Enrollments
  UserID    INTEGER NOT NULL, 
  ClassDate INTEGER NOT NULL,
  PRIMARY KEY(ClassID, UserID, ClassDate), 
- FOREIGN KEY(ClassID) REFERENCES ClassSchedule(ClassID)
+ FOREIGN KEY(ClassID) REFERENCES ClassSchedule(ClassID),
+ FOREIGN KEY (UserID) REFERENCES User(ID)
 );
 
-ALTER TABLE Enrollments
-ADD FOREIGN KEY (UserID) REFERENCES User(ID);
