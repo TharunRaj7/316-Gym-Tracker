@@ -8,6 +8,7 @@ import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
+from data.insert_resources import insertRes
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -16,6 +17,10 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
+
+#insert resources
+#insertRes(db)
+
 
 # Automatically tear down SQLAlchemy.
 '''
