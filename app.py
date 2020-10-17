@@ -52,7 +52,8 @@ def home():
 
 @app.route('/brodie')
 def brodieGym():
-    return render_template('pages/brodie.html')
+    dummy_data=["hello", "my", "name", "is", "x", "y", "z"]
+    return render_template('pages/brodie.html', data=dummy_data)
 
 @app.route('/wilson')
 def wilsonGym():
