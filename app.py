@@ -50,6 +50,19 @@ def login_required(test):
 def home():
     return render_template('pages/placeholder.home.html')
 
+@app.route('/brodie')
+def brodieGym():
+    dummy_data=["hello", "my", "name", "is", "x", "y", "z"]
+    return render_template('pages/brodie.html', data=dummy_data)
+
+@app.route('/wilson')
+def wilsonGym():
+    return render_template('pages/wilson.html')
+
+@app.route('/gym')
+def bothGym():
+    return render_template('pages/gym.html')
+
 
 
 @app.route('/about')
@@ -67,6 +80,8 @@ def about():
 def login():
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
+
+
 
 
 @app.route('/register')
