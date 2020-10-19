@@ -4,6 +4,7 @@
 
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from backend_requests import get_resources
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -50,18 +51,20 @@ def login_required(test):
 def home():
     return render_template('pages/placeholder.home.html')
 
+@app.route('/gym')
+def bothGym():
+    all_resources = get_resources.get_all_resources(db)
+    return render_template('pages/gym.html', data=all_resources)
+
 @app.route('/brodie')
 def brodieGym():
-    dummy_data=["hello", "my", "name", "is", "x", "y", "z"]
-    return render_template('pages/brodie.html', data=dummy_data)
+    brodie_resources = get_resources.get_fitlered_resources(db, filter_on='Location', filter_val='Brodie')
+    return render_template('pages/brodie.html', data=brodie_resources)
 
 @app.route('/wilson')
 def wilsonGym():
-    return render_template('pages/wilson.html')
-
-@app.route('/gym')
-def bothGym():
-    return render_template('pages/gym.html')
+    wilson_resources = get_resources.get_fitlered_resources(db, filter_on='Location', filter_val='Wilson')
+    return render_template('pages/wilson.html', data=wilson_resources)
 
 
 

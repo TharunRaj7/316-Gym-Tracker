@@ -3,7 +3,22 @@ content %}
 
 <div class="page-header">
   <h1>Brodie Gym</h1>
+  <table>
+    <tr>
+      <th>ResourceID</th>
+      <th>ResourceName</th>
+      <th>ResourceType</th>
+      <th>Location</th>
+    </tr>
+    {% for row in data%}
+    <tr>
+      <td>{{row['ResourceID']}}</th>
+      <td>{{row['ResourceName']}}</th>
+      <td>{{row['ResourceType']}}</th>
+      <td>{{row['Location']}}</th>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
-{% for name in data%}
-<h1>{{name}}</h1>
-{% endfor %} {% endblock %}
+
+{% endblock %}
