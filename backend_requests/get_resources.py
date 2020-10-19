@@ -1,6 +1,3 @@
-import pandas as pd
-
-
 def get_all_resources(db):
 
     query = 'select * from Resources'
@@ -11,6 +8,10 @@ def get_all_resources(db):
 
 
 def get_fitlered_resources(db, filter_on, filter_val):
+    """
+    Takes in db engine, column to filter on, value to filter to
+    (select * from resources where filter_on = 'filter_val')
+    """
     query = "select * from Resources where {} = {}".format(
         filter_on, "'" + filter_val + "'")
     db.engine.execute(query)
