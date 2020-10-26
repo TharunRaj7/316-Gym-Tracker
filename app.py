@@ -10,6 +10,7 @@ from logging import Formatter, FileHandler
 from forms import *
 import os
 from data.insert_resources import insertRes
+import pyrebase
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -19,6 +20,18 @@ app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
+config = {
+  "apiKey": "AIzaSyDjKfcd1yjSGG-seEnS_KNK8B6elIcFdKw",
+  "authDomain": "final-bbbfc.firebaseapp.com",
+  "databaseURL": "https://final-bbbfc.firebaseio.com",
+  "projectId": "final-bbbfc",
+  "storageBucket": "final-bbbfc.appspot.com",
+  "messagingSenderId": "592348500050",
+  "appId": "1:592348500050:web:098284b6ed5d530afecf8b",
+  "measurementId": "G-TGJ2XYJB0Y"
+};
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
 #insert resources
 #insertRes(db)
 
@@ -91,6 +104,30 @@ def login():
 def register():
     form = RegisterForm(request.form)
     return render_template('forms/register.html', form=form)
+
+@app.route('/register', methods =["GET", "POST"]) 
+def signUpCompleted(): 
+    if request.method == "POST": 
+       email = request.form.get('email') 
+       password = request.form.get('password')  
+       confirmpass= request.form.get('confirm')
+       if password!= confirmpass:
+           form = RegisterForm(request.form)
+           return render_template('forms/register.html', form=form)
+       user= auth.create_user_with_email_and_password(email, password)
+    return render_template('pages/placeholder.home.html', userInfo=user['idToken']) 
+
+@app.route('/login', methods =["GET", "POST"]) 
+def signInCompleted(): 
+    if request.method == "POST": 
+       email = request.form.get('name') 
+       password = request.form.get('password')  
+       user = auth.sign_in_with_email_and_password(email, password)
+       print(user)
+       if user==None:
+           form = RegisterForm(request.form)
+           return render_template('forms/login.html', form=form)
+    return render_template('pages/placeholder.home.html') 
 
 
 @app.route('/forgot')
