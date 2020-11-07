@@ -16,16 +16,7 @@ content %}
       <td>{{row['ResourceName']}}</td>
       <td>{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
-      <td>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-toggle="modal"
-          data-target="#myModal"
-        >
-          Book Now!
-        </button>
-      </td>
+      <td><a href=# id=test><button class='btn btn-primary'>Book Now!</button></a></td>
     </tr>
     {% endfor %}
   </table>
@@ -56,7 +47,7 @@ content %}
           </div>
           <div class="checkbox disabled">
             <label
-              ><input type="checkbox" value="" checked disabled />Date 3</label
+              ><input type="checkbox" value="" id="date3" checked disabled />Date 3</label
             >
           </div>
         </div>
@@ -69,5 +60,16 @@ content %}
     </div>
   </div>
 </div>
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+        $(function() {
+          $('a#test').bind('click', function() {
+            $.getJSON('/background_process_test',
+                function(data) {
+                  $("#myModal").modal();
+            });
+            return false;
+          });
+        });
+</script>
 {% endblock %}
