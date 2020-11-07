@@ -28,7 +28,8 @@ CREATE TABLE Bookings
  TimeBookedAt TIME NOT NULL, 
  ResourceID   INTEGER NOT NULL, 
  ResourceType VARCHAR(256) NOT NULL CHECK(ResourceType IN ('Space','Equipment')),
- FOREIGN KEY (UserID) REFERENCES User(ID)
+ FOREIGN KEY (UserID) REFERENCES User(ID),
+ FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID)
 );
 
 
@@ -38,7 +39,7 @@ CREATE TABLE Enrollments
  ClassDate INTEGER NOT NULL,
  PRIMARY KEY(ClassID, UserID, ClassDate), 
  FOREIGN KEY(ClassID) REFERENCES ClassSchedule(ClassID),
- FOREIGN KEY (UserID) REFERENCES User(ID)
+ FOREIGN KEY (UserID) REFERENCES User(ResourceID)
 );
 
 INSERT INTO ClassSchedule VALUES(1,'Yoga','Monday','16:30:00','Zoom',20);
@@ -58,14 +59,12 @@ INSERT INTO ClassSchedule VALUES(14,'Outdoor Yoga','Saturday','10:15:00','Kville
 INSERT INTO ClassSchedule VALUES(15,'Kickboxing','Saturday','12:00:00','Zoom',20);
 INSERT INTO ClassSchedule VALUES(16,'Rhythm HIIT','Sunday','11:00:00','Zoom',20);
 INSERT INTO ClassSchedule VALUES(17,'Power Yoga','Sunday','17:00:00','Zoom',20);
-                                          
-                                          
+
+
 -- CREATION OF TRIGGERS 
 
--- FOLLOWING TRIGGER ON ACCOUNT DELETION DOES THE FOLLOWING:
---delete account in User table 
---delete all reservations in enrollement table 
---delete all bookings in booking table 
+-- FOLLOWING TRIGGER ARE FOR ACCOUNT DELETION, RESOURCE DELETION, CLASS DELETION
+--(LAST TWO FOR ADMIN PURPOSES)
 
 USE `GymReservation`;
 DELIMITER 
@@ -78,6 +77,22 @@ DELETE from Enrollments WHERE User.ID = OLD.ID;
 END;
 $$
 
-                                          
-                                          
+USE `GymReservation`;
+DELIMITER 
+$$
+CREATE TRIGGER `resource_deletion` 
+AFTER DELETE ON Resources FOR EACH ROW
+BEGIN
+DELETE from Bookings WHERE Booking.ResourceID = OLD.ResourceID;
+END;
+$$
 
+USE `GymReservation`;
+DELIMITER 
+$$
+CREATE TRIGGER `class_deletion` 
+AFTER DELETE ON ClassSchedule FOR EACH ROW
+BEGIN
+DELETE from Enrollments WHERE Enrollments.ClassID = OLD.ClassID;
+END;
+$$
