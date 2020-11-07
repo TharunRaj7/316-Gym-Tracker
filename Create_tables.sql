@@ -83,7 +83,7 @@ $$
 CREATE TRIGGER `resource_deletion` 
 AFTER DELETE ON Resources FOR EACH ROW
 BEGIN
-DELETE from Bookings WHERE Booking.ResourceID = OLD.ResourceID;
+DELETE from Bookings WHERE Bookings.ResourceID = OLD.ResourceID;
 END;
 $$
 
@@ -96,3 +96,6 @@ BEGIN
 DELETE from Enrollments WHERE Enrollments.ClassID = OLD.ClassID;
 END;
 $$
+
+
+
