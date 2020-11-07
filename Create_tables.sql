@@ -58,5 +58,26 @@ INSERT INTO ClassSchedule VALUES(14,'Outdoor Yoga','Saturday','10:15:00','Kville
 INSERT INTO ClassSchedule VALUES(15,'Kickboxing','Saturday','12:00:00','Zoom',20);
 INSERT INTO ClassSchedule VALUES(16,'Rhythm HIIT','Sunday','11:00:00','Zoom',20);
 INSERT INTO ClassSchedule VALUES(17,'Power Yoga','Sunday','17:00:00','Zoom',20);
+                                          
+                                          
+-- CREATION OF TRIGGERS 
 
+-- FOLLOWING TRIGGER ON ACCOUNT DELETION DOES THE FOLLOWING:
+--delete account in User table 
+--delete all reservations in enrollement table 
+--delete all bookings in booking table 
+
+USE `GymReservation`;
+DELIMITER 
+$$
+CREATE TRIGGER `account_deletion` 
+AFTER DELETE ON User FOR EACH ROW
+BEGIN
+DELETE from Bookings WHERE User.ID = OLD.ID;
+DELETE from Enrollments WHERE User.ID = OLD.ID;
+END;
+$$
+
+                                          
+                                          
 
