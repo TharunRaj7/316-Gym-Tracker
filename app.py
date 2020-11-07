@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, current_app
 from flask_sqlalchemy import SQLAlchemy
 from backend_requests import get_resources
 import logging
@@ -10,6 +10,7 @@ from logging import Formatter, FileHandler
 from forms import *
 import os
 from data.insert_resources import insertRes
+import pyrebase
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -19,8 +20,11 @@ app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
-#insert resources
-#insertRes(db)
+config = app.config["API_KEY"]
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+# insert resources
+# insertRes(db)
 
 
 # Automatically tear down SQLAlchemy.
@@ -51,21 +55,25 @@ def login_required(test):
 def home():
     return render_template('pages/placeholder.home.html')
 
+
 @app.route('/gym')
 def bothGym():
     all_resources = get_resources.get_all_resources(db)
     return render_template('pages/gym.html', data=all_resources)
 
+
 @app.route('/brodie')
 def brodieGym():
-    brodie_resources = get_resources.get_fitlered_resources(db, filter_on='Location', filter_val='Brodie')
+    brodie_resources = get_resources.get_fitlered_resources(
+        db, filter_on='Location', filter_val='Brodie')
     return render_template('pages/brodie.html', data=brodie_resources)
+
 
 @app.route('/wilson')
 def wilsonGym():
-    wilson_resources = get_resources.get_fitlered_resources(db, filter_on='Location', filter_val='Wilson')
+    wilson_resources = get_resources.get_fitlered_resources(
+        db, filter_on='Location', filter_val='Wilson')
     return render_template('pages/wilson.html', data=wilson_resources)
-
 
 
 @app.route('/about')
@@ -85,12 +93,36 @@ def login():
     return render_template('forms/login.html', form=form)
 
 
-
-
 @app.route('/register')
 def register():
     form = RegisterForm(request.form)
     return render_template('forms/register.html', form=form)
+
+
+@app.route('/register', methods=["GET", "POST"])
+def signUpCompleted():
+    if request.method == "POST":
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirmpass = request.form.get('confirm')
+        if password != confirmpass:
+            form = RegisterForm(request.form)
+            return render_template('forms/register.html', form=form)
+        user = auth.create_user_with_email_and_password(email, password)
+    return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
+
+
+@app.route('/login', methods=["GET", "POST"])
+def signInCompleted():
+    if request.method == "POST":
+        email = request.form.get('name')
+        password = request.form.get('password')
+        user = auth.sign_in_with_email_and_password(email, password)
+        print(user)
+        if user == None:
+            form = RegisterForm(request.form)
+            return render_template('forms/login.html', form=form)
+    return render_template('pages/placeholder.home.html')
 
 
 @app.route('/forgot')
@@ -103,18 +135,26 @@ def forgot():
 
 @app.errorhandler(500)
 def internal_error(error):
-    #db_session.rollback()
+    # db_session.rollback()
     return render_template('errors/500.html'), 500
+
+
+@app.route('/background_process_test')
+def background_process_test():
+    print("Hello")
+    return {"date1": True, "Date 2": False, "Date3": False}
 
 
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
 
+
 if not app.debug:
     file_handler = FileHandler('error.log')
     file_handler.setFormatter(
-        Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+        Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
     )
     app.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)

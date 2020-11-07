@@ -23,7 +23,9 @@ class RegisterForm(Form):
 
 
 class LoginForm(Form):
-    name = TextField('Username', [DataRequired()])
+    name = TextField(
+        'Email', validators=[DataRequired(), Length(min=6, max=40)]
+    )
     password = PasswordField('Password', [DataRequired()])
 
 
