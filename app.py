@@ -140,7 +140,7 @@ def internal_error(error):
 
 
 @app.route('/background_process_test')
-def background_process_test():
+def background_process_test(test):
     print("Hello")
     return {"date1": True, "Date 2": False, "Date3": False}
 
