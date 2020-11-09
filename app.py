@@ -66,14 +66,14 @@ def bothGym():
 def brodieGym():
     brodie_resources = get_data.get_filtered_data(
         db, table = "Resources", where = "Location = 'Brodie'")
-    return render_template('pages/brodie.html', data=brodie_resources)
+    return render_template('pages/gym.html', data=brodie_resources)
 
 
 @app.route('/wilson')
 def wilsonGym():
     wilson_resources = get_data.get_filtered_data(
-        db, table = "Resources", where = "Location = Wilson")
-    return render_template('pages/wilson.html', data=wilson_resources)
+        db, table = "Resources", where = "Location = 'Wilson'")
+    return render_template('pages/gym.html', data=wilson_resources)
 
 
 @app.route('/about')
@@ -140,10 +140,9 @@ def internal_error(error):
 
 
 @app.route('/background_process_test')
-def background_process_test(test):
+def background_process_test():
     print("Hello")
     return {"date1": True, "Date 2": False, "Date3": False}
-
 
 @app.errorhandler(404)
 def not_found_error(error):
