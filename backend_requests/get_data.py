@@ -8,10 +8,6 @@ def get_all_resources(db):
 
 
 def get_filtered_data(db, table, where):
-    """
-    Takes in db engine, column to filter on, value to filter to
-    (select * from resources where filter_on = 'filter_val')
-    """
     query = "select * from {} where {}".format(
         table, where)
     db.engine.execute(query)

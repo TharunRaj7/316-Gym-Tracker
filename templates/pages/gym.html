@@ -12,16 +12,42 @@ content %}
     </tr>
     {% for row in data%}
     <tr>
-      <td>{{row['ResourceID']}}</td>
-      <td>{{row['ResourceName']}}</td>
+      <td class = "resID">{{row['ResourceID']}}</td>
+      <td class = "resName">{{row['ResourceName']}}</td>
       <td>{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
-      <td><a href=# id=test><button class='btn btn-primary'>Book Now!</button></a></td>
-
+      <td><a href=# id ="bookResource"></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Book Now!</button></a></td>
     </tr>
     {% endfor %}
   </table>
-   <div class="modal fade" id="myModal" role="dialog">
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type = text/javascript>
+    $(document).ready(function() {
+      $(".book-resource").on("click", function (){ 
+        var resID = 
+        $(this).parents("tr").find(".resID").text(); 
+        var resName = 
+        $(this).parents("tr").find(".resName").text(); 
+        var dates = "";
+        var route = "/background_process_test/"+ resID;
+        $.getJSON(route,
+            function(data) {
+            $.each(data.dates, function (i, val) {
+              dates += 
+              "<div class='checkbox'><label><input type='checkbox' value=''/>" + val + "</label></div>";
+            })
+            //alert(dates);
+            $("#dateVal").empty(); 
+            $("#dateVal").append(dates); 
+        });
+        $("#dispName").empty(); 
+        $("#dispName").append(resName); 
+      });
+    });
+</script>
+ 
+     <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -32,25 +58,22 @@ content %}
           <h4 class="modal-title">Schedule</h4>
         </div>
         <div class="modal-body">
-          <div class="form-group">
-            <label for="usr">Resource Name:</label>
-            <input type="text" class="form-control" id="usr" />
+          <div class="form-group" id = "dispName">
+            <label for="usr">Placeholder</label>
           </div>
+          <b>Time slots available for Reservation:</b>
           <!-- <div class="form-group">
             <label for="comment">Comment:</label>
             <textarea class="form-control" rows="5" id="comment"></textarea>
           </div> -->
-          <div class="checkbox">
+          <div class="dates-holder" id = "dateVal">
+          <!-- <div class="checkbox">
             <label><input type="checkbox" value="" />Date 1</label>
           </div>
-          <div class="checkbox">
-            <label><input type="checkbox" value="" />Date 2</label>
-          </div>
           <div class="checkbox disabled">
-            <label
-              ><input type="checkbox" value="" id="date3" checked disabled />Date 3</label
-            >
-          </div>
+            <label><input type="checkbox" value="" id="date3" checked disabled />Date 3</label>
+          </div> -->
+        </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -61,16 +84,5 @@ content %}
     </div>
   </div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type=text/javascript>
-        $(function() {
-          $('a#test').bind('click', function() {
-            $.getJSON('/background_process_test',
-                function(data) {
-                  $("#myModal").modal();
-            });
-            return false;
-          });
-        });
-</script>
+
 {% endblock %}

@@ -139,10 +139,18 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/background_process_test')
-def background_process_test():
-    print("Hello")
-    return {"date1": True, "Date 2": False, "Date3": False}
+@app.route('/background_process_test/<ResourceID>')
+def background_process_test(ResourceID):
+    #print("reached")
+    where = "ResourceID = {}".format(ResourceID)
+    data = get_data.get_filtered_data(db, "Bookings", where)
+    ret = {'dates':[]}
+    for i in range(len(data)):
+        row1 = data[i]
+        date = row1['DateBookedOn'].strftime('%m/%d/%Y')
+        ret['dates'].append(date)
+    #print(ret)
+    return ret
 
 @app.errorhandler(404)
 def not_found_error(error):
