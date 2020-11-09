@@ -4,6 +4,7 @@
 
 from flask import Flask, render_template, request, current_app
 from flask_sqlalchemy import SQLAlchemy
+from flask.json import jsonify
 from backend_requests import get_resources
 import logging
 from logging import Formatter, FileHandler
@@ -11,7 +12,7 @@ from forms import *
 import os
 from data.insert_resources import insertRes
 import pyrebase
-
+current_user = {}
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -19,7 +20,6 @@ import pyrebase
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-
 config = app.config["API_KEY"]
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
@@ -87,6 +87,11 @@ def about():
     return render_template('pages/placeholder.about.html')
 
 
+@app.route('/profile')
+def profile():
+    return render_template('pages/profile.html', userEmail=current_user['user']['email'], userDisplayName=current_user['user']['displayName'])
+
+
 @app.route('/login')
 def login():
     form = LoginForm(request.form)
@@ -109,6 +114,7 @@ def signUpCompleted():
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
+        current_user['user'] = user
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -118,11 +124,14 @@ def signInCompleted():
         email = request.form.get('name')
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
+        current_user['user'] = user
+        jsonify(current_user['user'])
+        # user = auth.refresh(user['refreshToken'])
         print(user)
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
-    return render_template('pages/placeholder.home.html')
+    return render_template('pages/placeholder.home.html', userInfo=user)
 
 
 @app.route('/forgot')

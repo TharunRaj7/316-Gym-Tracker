@@ -1,0 +1,28 @@
+{% extends 'layouts/main.html' %} {% block title %}About{% endblock %} {% block
+content %}
+
+<h1>Profile</h1>
+<p>{{userEmail}}</p>
+<p>{{userDisplayName}}</p>
+<table class="table table-bordered table-striped table-hover">
+  <tr>
+    <th>ResourceID</th>
+    <th>ResourceName</th>
+    <th>ResourceType</th>
+    <th>Location</th>
+  </tr>
+  {% for row in data%}
+  <tr>
+    <td>{{row['ResourceID']}}</td>
+    <td>{{row['ResourceName']}}</td>
+    <td>{{row['ResourceType']}}</td>
+    <td>{{row['Location']}}</td>
+    <td>
+      <a href="#" id="test"
+        ><button class="btn btn-primary">Book Now!</button></a
+      >
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{{userInfo}} {% endblock %}
