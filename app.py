@@ -4,7 +4,7 @@
 
 from flask import Flask, render_template, request, current_app
 from flask_sqlalchemy import SQLAlchemy
-from backend_requests import get_resources
+from backend_requests import get_data
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -58,21 +58,21 @@ def home():
 
 @app.route('/gym')
 def bothGym():
-    all_resources = get_resources.get_all_resources(db)
+    all_resources = get_data.get_all_resources(db)
     return render_template('pages/gym.html', data=all_resources)
 
 
 @app.route('/brodie')
 def brodieGym():
-    brodie_resources = get_resources.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Brodie')
+    brodie_resources = get_data.get_filtered_data(
+        db, table = "Resources", where = "Location = 'Brodie'")
     return render_template('pages/brodie.html', data=brodie_resources)
 
 
 @app.route('/wilson')
 def wilsonGym():
-    wilson_resources = get_resources.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Wilson')
+    wilson_resources = get_data.get_filtered_data(
+        db, table = "Resources", where = "Location = Wilson")
     return render_template('pages/wilson.html', data=wilson_resources)
 
 

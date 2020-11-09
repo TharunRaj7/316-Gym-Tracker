@@ -7,13 +7,13 @@ def get_all_resources(db):
     return r
 
 
-def get_fitlered_resources(db, filter_on, filter_val):
+def get_filtered_data(db, table, where):
     """
     Takes in db engine, column to filter on, value to filter to
     (select * from resources where filter_on = 'filter_val')
     """
-    query = "select * from Resources where {} = {}".format(
-        filter_on, "'" + filter_val + "'")
+    query = "select * from {} where {}".format(
+        table, where)
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
