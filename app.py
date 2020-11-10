@@ -4,12 +4,8 @@
 
 from flask import Flask, render_template, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
-<<<<<<< HEAD
 from backend_requests import get_data, process_data
-=======
 from flask.json import jsonify
-from backend_requests import get_resources
->>>>>>> origin/master
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -62,53 +58,37 @@ def home():
 
 @app.route('/gym')
 def bothGym():
-<<<<<<< HEAD
-    all_resources = get_data.get_all_resources(db)
-=======
     if 'usr' not in session:
         print("\nNot logged in...")
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    all_resources = get_resources.get_all_resources(db)
->>>>>>> origin/master
+    all_resources = get_data.get_all_resources(db)
     return render_template('pages/gym.html', data=all_resources)
 
 
 @app.route('/brodie')
 def brodieGym():
-<<<<<<< HEAD
-    brodie_resources = get_data.get_filtered_data(
-        db, "*", table = "Resources", where = "Location = 'Brodie'")
-    return render_template('pages/gym.html', data=brodie_resources)
-=======
     if 'usr' not in session:
         print("\nNot logged in...")
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    brodie_resources = get_resources.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Brodie')
-    return render_template('pages/brodie.html', data=brodie_resources)
->>>>>>> origin/master
+    brodie_resources = get_data.get_filtered_data(
+        db, "*", table = "Resources", where = "Location = 'Brodie'")
+    return render_template('pages/gym.html', data=brodie_resources)
 
 
 @app.route('/wilson')
 def wilsonGym():
-<<<<<<< HEAD
-    wilson_resources = get_data.get_filtered_data(
-        db, "*", table = "Resources", where = "Location = 'Wilson'")
-    return render_template('pages/gym.html', data=wilson_resources)
-=======
     if 'usr' not in session:
         print("\nNot logged in...")
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    wilson_resources = get_resources.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Wilson')
-    return render_template('pages/wilson.html', data=wilson_resources)
->>>>>>> origin/master
+    wilson_resources = get_data.get_filtered_data(
+        db, "*", table = "Resources", where = "Location = 'Wilson'")
+    return render_template('pages/gym.html', data=wilson_resources)
 
 
 @app.route('/about')
@@ -208,7 +188,7 @@ def get_available_times(ResourceID):
     where = "ResourceID = {}".format(ResourceID)
     datesBooked = get_data.get_filtered_data(db, "DateBookedOn, TimeBookedAt", "Bookings", where)
     ret = process_data.get_available_datetimes(datesBooked, "08:00:00", "22:00:00")
-    #print(ret)
+    print(ret)
     return ret
 
 @app.errorhandler(404)
