@@ -141,7 +141,7 @@ def signUpCompleted():
         session['usr'] = user_id
         user_email = user['email'] if user is not None else None
         session['email'] = user_email
-        print(session)
+        # print(session)
         current_user['user'] = user
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
@@ -157,7 +157,7 @@ def signInCompleted():
         user_email = user['email'] if user is not None else None
         session['usr'] = user_id
         session['email'] = user_email
-        print(session)
+        # print(session)
         current_user['user'] = user
         jsonify(current_user['user'])
         # user = auth.refresh(user['refreshToken'])
