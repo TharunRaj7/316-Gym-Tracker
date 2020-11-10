@@ -16,7 +16,7 @@ content %}
       <td class = "resName">{{row['ResourceName']}}</td>
       <td>{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
-      <td><a href=# id ="bookResource"></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Book Now!</button></a></td>
+      <td><a href=#></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Book Now!</button></a></td>
     </tr>
     {% endfor %}
   </table>
@@ -30,7 +30,7 @@ content %}
         var resName = 
         $(this).parents("tr").find(".resName").text(); 
         var dates = "";
-        var route = "/background_process_test/"+ resID;
+        var route = "/get_available_times/"+ resID;
         $.getJSON(route,
             function(data) {
             $.each(data.dates, function (i, val) {

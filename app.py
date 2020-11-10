@@ -4,7 +4,7 @@
 
 from flask import Flask, render_template, request, current_app
 from flask_sqlalchemy import SQLAlchemy
-from backend_requests import get_data
+from backend_requests import get_data, process_data
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -65,14 +65,14 @@ def bothGym():
 @app.route('/brodie')
 def brodieGym():
     brodie_resources = get_data.get_filtered_data(
-        db, table = "Resources", where = "Location = 'Brodie'")
+        db, "*", table = "Resources", where = "Location = 'Brodie'")
     return render_template('pages/gym.html', data=brodie_resources)
 
 
 @app.route('/wilson')
 def wilsonGym():
     wilson_resources = get_data.get_filtered_data(
-        db, table = "Resources", where = "Location = 'Wilson'")
+        db, "*", table = "Resources", where = "Location = 'Wilson'")
     return render_template('pages/gym.html', data=wilson_resources)
 
 
@@ -139,16 +139,12 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/background_process_test/<ResourceID>')
-def background_process_test(ResourceID):
+@app.route('/get_available_times/<ResourceID>')
+def get_available_times(ResourceID):
     #print("reached")
     where = "ResourceID = {}".format(ResourceID)
-    data = get_data.get_filtered_data(db, "Bookings", where)
-    ret = {'dates':[]}
-    for i in range(len(data)):
-        row1 = data[i]
-        date = row1['DateBookedOn'].strftime('%m/%d/%Y')
-        ret['dates'].append(date)
+    datesBooked = get_data.get_filtered_data(db, "DateBookedOn, TimeBookedAt", "Bookings", where)
+    ret = process_data.get_available_datetimes(datesBooked, "08:00:00", "22:00:00")
     #print(ret)
     return ret
 
