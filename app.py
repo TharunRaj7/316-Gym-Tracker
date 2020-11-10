@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, current_app
+from flask import Flask, render_template, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
 from flask.json import jsonify
 from backend_requests import get_resources
@@ -58,12 +58,22 @@ def home():
 
 @app.route('/gym')
 def bothGym():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
     all_resources = get_resources.get_all_resources(db)
     return render_template('pages/gym.html', data=all_resources)
 
 
 @app.route('/brodie')
 def brodieGym():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
     brodie_resources = get_resources.get_fitlered_resources(
         db, filter_on='Location', filter_val='Brodie')
     return render_template('pages/brodie.html', data=brodie_resources)
@@ -71,6 +81,11 @@ def brodieGym():
 
 @app.route('/wilson')
 def wilsonGym():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
     wilson_resources = get_resources.get_fitlered_resources(
         db, filter_on='Location', filter_val='Wilson')
     return render_template('pages/wilson.html', data=wilson_resources)
@@ -89,6 +104,13 @@ def about():
 
 @app.route('/profile')
 def profile():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+        form = RegisterForm(request.form)
+        return render_template('forms/login.html', form=form)
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
     return render_template('pages/profile.html', userEmail=current_user['user']['email'], userDisplayName=current_user['user']['displayName'])
 
 
@@ -114,6 +136,12 @@ def signUpCompleted():
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
+        #TODO: for protecting routes
+        user_id = user['idToken']
+        session['usr'] = user_id
+        user_email = user['email'] if user is not None else None
+        session['email'] = user_email
+        # print(session)
         current_user['user'] = user
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
@@ -124,10 +152,16 @@ def signInCompleted():
         email = request.form.get('name')
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
+        #TODO: for protecting routes
+        user_id = user['idToken'] if user is not None else None
+        user_email = user['email'] if user is not None else None
+        session['usr'] = user_id
+        session['email'] = user_email
+        # print(session)
         current_user['user'] = user
         jsonify(current_user['user'])
         # user = auth.refresh(user['refreshToken'])
-        print(user)
+        # print(user)
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
