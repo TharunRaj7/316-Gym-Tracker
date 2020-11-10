@@ -1,8 +1,8 @@
-{% extends 'layouts/main.html' %} {% block title %}Gym{% endblock %} {% block
+{% extends 'layouts/main.html' %} {% block title %}About{% endblock %} {% block
 content %}
 
-<div class="page-header" style="text-align:center;">
-<h1>Equipment Information</h1>
+<div class="page-header" style="text-align:center;"> 
+  <h1>Wilson Equipment</h1>
 </div>
 <div>
   <table class="table table-bordered table-striped table-hover">
@@ -20,11 +20,11 @@ content %}
       <td>{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
       <td><a href=# id=test><button class='btn btn-primary'>Reserve Now!</button></a></td>
-
     </tr>
+
     {% endfor %}
   </table>
-   <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">

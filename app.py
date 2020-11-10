@@ -67,7 +67,12 @@ def bothGym():
     return render_template('pages/gym.html', data=all_resources)
 
 
+
 @app.route('/brodie')
+def brodie():
+    return render_template('pages/brodie.html')
+
+@app.route('/brodieEquipment')
 def brodieGym():
     if 'usr' not in session:
         print("\nNot logged in...")
@@ -76,10 +81,13 @@ def brodieGym():
         print("Email:", session['email'])
     brodie_resources = get_resources.get_fitlered_resources(
         db, filter_on='Location', filter_val='Brodie')
-    return render_template('pages/brodie.html', data=brodie_resources)
-
+    return render_template('pages/brodieEquipment.html', data=brodie_resources)
 
 @app.route('/wilson')
+def wilson():
+    return render_template('pages/wilson.html')
+
+@app.route('/wilsonEquipment')
 def wilsonGym():
     if 'usr' not in session:
         print("\nNot logged in...")
@@ -88,7 +96,7 @@ def wilsonGym():
         print("Email:", session['email'])
     wilson_resources = get_resources.get_fitlered_resources(
         db, filter_on='Location', filter_val='Wilson')
-    return render_template('pages/wilson.html', data=wilson_resources)
+    return render_template('pages/wilsonEquipment.html', data=wilson_resources)
 
 
 @app.route('/about')
