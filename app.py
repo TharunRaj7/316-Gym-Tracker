@@ -2,16 +2,21 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, current_app
+from flask import Flask, render_template, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
+<<<<<<< HEAD
 from backend_requests import get_data, process_data
+=======
+from flask.json import jsonify
+from backend_requests import get_resources
+>>>>>>> origin/master
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
 from data.insert_resources import insertRes
 import pyrebase
-
+current_user = {}
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -19,7 +24,6 @@ import pyrebase
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-
 config = app.config["API_KEY"]
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
@@ -58,22 +62,53 @@ def home():
 
 @app.route('/gym')
 def bothGym():
+<<<<<<< HEAD
     all_resources = get_data.get_all_resources(db)
+=======
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+    all_resources = get_resources.get_all_resources(db)
+>>>>>>> origin/master
     return render_template('pages/gym.html', data=all_resources)
 
 
 @app.route('/brodie')
 def brodieGym():
+<<<<<<< HEAD
     brodie_resources = get_data.get_filtered_data(
         db, "*", table = "Resources", where = "Location = 'Brodie'")
     return render_template('pages/gym.html', data=brodie_resources)
+=======
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+    brodie_resources = get_resources.get_fitlered_resources(
+        db, filter_on='Location', filter_val='Brodie')
+    return render_template('pages/brodie.html', data=brodie_resources)
+>>>>>>> origin/master
 
 
 @app.route('/wilson')
 def wilsonGym():
+<<<<<<< HEAD
     wilson_resources = get_data.get_filtered_data(
         db, "*", table = "Resources", where = "Location = 'Wilson'")
     return render_template('pages/gym.html', data=wilson_resources)
+=======
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+    wilson_resources = get_resources.get_fitlered_resources(
+        db, filter_on='Location', filter_val='Wilson')
+    return render_template('pages/wilson.html', data=wilson_resources)
+>>>>>>> origin/master
 
 
 @app.route('/about')
@@ -85,6 +120,18 @@ def about():
     # for i in r:
     #     s += i['name'] # This works if we wanna use a dict format, and tuples also work.
     return render_template('pages/placeholder.about.html')
+
+
+@app.route('/profile')
+def profile():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+        form = RegisterForm(request.form)
+        return render_template('forms/login.html', form=form)
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+    return render_template('pages/profile.html', userEmail=current_user['user']['email'], userDisplayName=current_user['user']['displayName'])
 
 
 @app.route('/login')
@@ -109,6 +156,13 @@ def signUpCompleted():
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
+        #TODO: for protecting routes
+        user_id = user['idToken']
+        session['usr'] = user_id
+        user_email = user['email'] if user is not None else None
+        session['email'] = user_email
+        # print(session)
+        current_user['user'] = user
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -118,11 +172,20 @@ def signInCompleted():
         email = request.form.get('name')
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
-        print(user)
+        #TODO: for protecting routes
+        user_id = user['idToken'] if user is not None else None
+        user_email = user['email'] if user is not None else None
+        session['usr'] = user_id
+        session['email'] = user_email
+        # print(session)
+        current_user['user'] = user
+        jsonify(current_user['user'])
+        # user = auth.refresh(user['refreshToken'])
+        # print(user)
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
-    return render_template('pages/placeholder.home.html')
+    return render_template('pages/placeholder.home.html', userInfo=user)
 
 
 @app.route('/forgot')
