@@ -63,7 +63,9 @@ def bothGym():
     # else:
     #     print("\nUser is logged in...")
     #     print("Email:", session['email'])
-    all_resources = get_data.get_all_resources(db)
+    all_resources = []
+    all_resources.append("Equipment Information")
+    all_resources.append(get_data.get_all_resources(db))
     return render_template('pages/gym.html', data=all_resources)
 
 
@@ -79,9 +81,11 @@ def brodieGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    brodie_resources = get_data.get_filtered_data(
-        db, "*", table = "Resources", where = "Location = 'Brodie'")
-    return render_template('pages/brodieEquipment.html', data=brodie_resources)
+    brodie_resources = []
+    brodie_resources.append("Brodie Equipment")
+    brodie_resources.append(get_data.get_filtered_data(
+        db, "*", table = "Resources", where = "Location = 'Brodie'"))
+    return render_template('pages/gym.html', data=brodie_resources)
 
 
 @app.route('/wilson')
@@ -95,9 +99,11 @@ def wilsonGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    wilson_resources = get_data.get_filtered_data(
-        db, "*", table = "Resources", where = "Location = 'Wilson'")
-    return render_template('pages/wilsonEquipment.html', data=wilson_resources)
+    wilson_resources = []
+    wilson_resources.append("Wilson Equipment")
+    wilson_resources.append(get_data.get_filtered_data(
+        db, "*", table = "Resources", where = "Location = 'Wilson'"))
+    return render_template('pages/gym.html', data=wilson_resources)
 
 
 @app.route('/about')
@@ -193,7 +199,7 @@ def internal_error(error):
 
 @app.route('/book_available_times/<ResourceID>', methods = ['GET', 'POST'])
 def book_available_times(ResourceID = "0"):
-    print("reached")
+    #print("reached")
     if request.method == "POST":
         dateTime = request.form.get('time').split(",")
         date, time = dateTime[0], dateTime[1] 

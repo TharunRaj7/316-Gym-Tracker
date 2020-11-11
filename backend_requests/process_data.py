@@ -35,14 +35,10 @@ def insert_into_bookings(db, valuesDict):
     date = datetime.strptime(valuesDict['DateBookedOn'], "%d %B %Y").strftime("%Y-%m-%d")
     time = datetime.strptime(valuesDict['TimeBookedAt'], "%I:%M %p").strftime("%H:%M:%S")
     query = "insert into Bookings (UserID, DateBookedOn, TimeBookedAt, ResourceID, ResourceType) values ("
-    query += valuesDict['UserID'] + ","
-    query += "'" + date + "',"
-    query += "'" + time + "',"
-    query += valuesDict['ResourceID'] + ","
-    query += "'" + valuesDict['ResourceType'] + "')"
+    query += valuesDict['UserID'] + ",'" + date + "','" + time + "'," + valuesDict['ResourceID'] + ",'" + valuesDict['ResourceType'] + "')"
     print(query)
 
-#Make sure to wrap string valueDict with single quotes inside the double quotes
+#Make sure to wrap a string value with single quotes inside the double quotes
 def insert_to_db(db, table, schema, values):
     query = "insert into {} (".format(table)
     for item in schema:
