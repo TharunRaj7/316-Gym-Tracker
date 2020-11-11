@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, current_app, session
+from flask import Flask, render_template, request, current_app, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 from backend_requests import get_data, process_data
 from flask.json import jsonify
@@ -196,7 +196,8 @@ def book_available_times(ResourceID = 0):
     print("reached")
     if request.method == "POST":
         process_data.insert_to_db()
-        return "done"
+        previous_url = request.referrer
+        return redirect(previous_url)
 
     # for GET requests
     where = "ResourceID = {}".format(ResourceID)

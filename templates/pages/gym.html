@@ -32,15 +32,15 @@ content %}
         $(this).parents("tr").find(".resID").text(); 
         var resName = 
         $(this).parents("tr").find(".resName").text(); 
-        var form = "<form action={{url_for('book_available_times', ResourceID = 0)}} method = 'POST' id = reserveForm><p><b>Please select a time slot to reserve:</b></p>";
+        var form = "<form action={{url_for('book_available_times', ResourceID = 0)}} method = 'POST' id = reserveForm><p><b>Please select a time slot to reserve:</b></p><br>";
         var route = "/book_available_times/"+ resID;
         $.getJSON(route,
             function(data) {
             $.each(data, function (date, times) {
               form += "<p><i>" + date + "</i></p>";
               $.each(times, function (i, val) {
-                form += "<input type='radio' class = 'radio-button' id=time" + i + " name='time' value=" + val + ">";
-                form += "<label for=time " + i + ">" + val + "</label><br>";
+                form += "<input type='radio' class = 'radio-button' style = 'margin-right:10px' id=time" + i + " name='time' value=" + val + ">";
+                form += "<label for=time " + i + " style = 'font-weight:normal, '>" + val + "</label><br>";
               })
               form += "<br>";
             })
