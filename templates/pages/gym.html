@@ -1,14 +1,17 @@
 {% extends 'layouts/main.html' %} {% block title %}Gym{% endblock %} {% block
 content %}
 
-<div class="page-header">
-  <h1>Gym Information</h1>
+<div class="page-header" style="text-align:center;">
+<h1>Equipment Information</h1>
+</div>
+<div>
   <table class="table table-bordered table-striped table-hover">
     <tr>
       <th>ResourceID</th>
       <th>ResourceName</th>
       <th>ResourceType</th>
       <th>Location</th>
+      <th>Booking</th>
     </tr>
     {% for row in data%}
     <tr>
@@ -16,7 +19,7 @@ content %}
       <td class = "resName">{{row['ResourceName']}}</td>
       <td>{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
-      <td><a href=#></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Book Now!</button></a></td>
+      <td><a href=#></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Reserve Now!
     </tr>
     {% endfor %}
   </table>
