@@ -192,10 +192,15 @@ def internal_error(error):
 
 
 @app.route('/book_available_times/<ResourceID>', methods = ['GET', 'POST'])
-def book_available_times(ResourceID = 0):
+def book_available_times(ResourceID = "0"):
     print("reached")
     if request.method == "POST":
-        process_data.insert_to_db()
+        dateTime = request.form.get('time').split(",")
+        date, time = dateTime[0], dateTime[1] 
+        #print(time)
+        resType = request.form.get('resType')
+        valuesDict = {'UserID': "23", 'DateBookedOn':date, 'TimeBookedAt':time, 'ResourceID':ResourceID, 'ResourceType':resType}
+        process_data.insert_into_bookings(db, valuesDict)
         previous_url = request.referrer
         return redirect(previous_url)
 

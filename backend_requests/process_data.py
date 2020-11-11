@@ -31,12 +31,41 @@ def get_available_datetimes(bookedDateTimes, gymStartTime, gymEndTime):
     # This returns a dict with keys as dates and values as a list of available times
     return ret
 
-def insert_to_db():
-    print("insert success")
+def insert_into_bookings(db, valuesDict):
+    date = datetime.strptime(valuesDict['DateBookedOn'], "%d %B %Y").strftime("%Y-%m-%d")
+    time = datetime.strptime(valuesDict['TimeBookedAt'], "%I:%M %p").strftime("%H:%M:%S")
+    query = "insert into Bookings (UserID, DateBookedOn, TimeBookedAt, ResourceID, ResourceType) values ("
+    query += valuesDict['UserID'] + ","
+    query += "'" + date + "',"
+    query += "'" + time + "',"
+    query += valuesDict['ResourceID'] + ","
+    query += "'" + valuesDict['ResourceType'] + "')"
+    print(query)
+
+#Make sure to wrap string valueDict with single quotes inside the double quotes
+def insert_to_db(db, table, schema, values):
+    query = "insert into {} (".format(table)
+    for item in schema:
+        query += item + ","
+    query = query[:-1]
+    query += ") values ("
+
+    for val in values:
+        query += val + ","
+    query = query[:-1] + ");"
+    db.engine.execute(query)
+    #print(query)
+
 
 if __name__ == '__main__':
     data = [{"DateBookedOn" : datetime.strptime("11/05/2020", "%m/%d/%Y"), "TimeBookedAt" : datetime.strptime("11:00:00", "%H:%M:%S")}, 
     {"DateBookedOn" : datetime.strptime("11/12/2020", "%m/%d/%Y"), "TimeBookedAt" : datetime.strptime("15:00:00", "%H:%M:%S")},
     {"DateBookedOn" : datetime.strptime("11/12/2020", "%m/%d/%Y"), "TimeBookedAt" : datetime.strptime("10:00:00", "%H:%M:%S")}]
     
-    print(get_available_datetimes(data, "08:00:00", "22:00:00"))
+    #print(get_available_datetimes(data, "08:00:00", "22:00:00"))
+
+    table = "Bookings"
+    schema = ["UserID, DateBookedOn, TimeBookedAt, ResourceID, ResourceType"]
+    values = ["23", "'08/26/2020'", "'23:00:00'", "45", "'Equipment'"]
+
+    insert_to_db("", table, schema, values)

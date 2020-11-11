@@ -17,7 +17,7 @@ content %}
     <tr>
       <td class = "resID">{{row['ResourceID']}}</td>
       <td class = "resName">{{row['ResourceName']}}</td>
-      <td>{{row['ResourceType']}}</td>
+      <td class = "resType">{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
       <td><a href=#></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Reserve Now!</button></td>
     </tr>
@@ -32,24 +32,26 @@ content %}
         $(this).parents("tr").find(".resID").text(); 
         var resName = 
         $(this).parents("tr").find(".resName").text(); 
-        var form = "<form action={{url_for('book_available_times', ResourceID = 0)}} method = 'POST' id = reserveForm><p><b>Please select a time slot to reserve:</b></p><br>";
+        var resType = 
+        $(this).parents("tr").find(".resType").text();
         var route = "/book_available_times/"+ resID;
+        var form = "<form action=" + route + " method = 'POST' id = 'reserveForm'><p><b>Please select a time slot to reserve:</b></p><br>";
         $.getJSON(route,
             function(data) {
             $.each(data, function (date, times) {
               form += "<p><i>" + date + "</i></p>";
               $.each(times, function (i, val) {
-                form += "<input type='radio' class = 'radio-button' style = 'margin-right:10px' id=time" + i + " name='time' value=" + val + ">";
-                form += "<label for=time " + i + " style = 'font-weight:normal, '>" + val + "</label><br>";
+                form += "<input type='radio' class = 'radio-button' style = 'margin-right:10px' id=time" + i + " name ='time' value='" + date + "," + val + "'>";
+                form += "<label for=time " + i + " style = 'font-weight:normal'>" + val + "</label><br>";
               })
               form += "<br>";
             })
-            form += "</form>";
-            //alert(form);
+            form += "<input type = 'hidden', name = 'resType', value = '" + resType + "'></form>"; //adding resourceType as a hidden input
+            //alert(resType);
             $("#dateForm").empty(); 
             $("#dateForm").append(form); 
         });
-        //alert(form);
+        //alert(form)
         $("#dispName").empty(); 
         $("#dispName").append(resName); 
       });
