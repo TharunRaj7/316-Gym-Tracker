@@ -2,10 +2,10 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, current_app, session
+from flask import Flask, render_template, request, current_app, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+from backend_requests import get_data, process_data
 from flask.json import jsonify
-from backend_requests import get_resources
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -58,12 +58,14 @@ def home():
 
 @app.route('/gym')
 def bothGym():
-    if 'usr' not in session:
-        print("\nNot logged in...")
-    else:
-        print("\nUser is logged in...")
-        print("Email:", session['email'])
-    all_resources = get_resources.get_all_resources(db)
+    # if 'usr' not in session:
+    #     print("\nNot logged in...")
+    # else:
+    #     print("\nUser is logged in...")
+    #     print("Email:", session['email'])
+    all_resources = []
+    all_resources.append("Equipment Information")
+    all_resources.append(get_data.get_all_resources(db))
     return render_template('pages/gym.html', data=all_resources)
 
 
@@ -79,9 +81,12 @@ def brodieGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    brodie_resources = get_resources.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Brodie')
-    return render_template('pages/brodieEquipment.html', data=brodie_resources)
+    brodie_resources = []
+    brodie_resources.append("Brodie Equipment")
+    brodie_resources.append(get_data.get_filtered_data(
+        db, "*", table = "Resources", where = "Location = 'Brodie'"))
+    return render_template('pages/gym.html', data=brodie_resources)
+
 
 @app.route('/wilson')
 def wilson():
@@ -94,9 +99,11 @@ def wilsonGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    wilson_resources = get_resources.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Wilson')
-    return render_template('pages/wilsonEquipment.html', data=wilson_resources)
+    wilson_resources = []
+    wilson_resources.append("Wilson Equipment")
+    wilson_resources.append(get_data.get_filtered_data(
+        db, "*", table = "Resources", where = "Location = 'Wilson'"))
+    return render_template('pages/gym.html', data=wilson_resources)
 
 
 @app.route('/about')
@@ -190,11 +197,25 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/background_process_test')
-def background_process_test():
-    print("Hello")
-    return {"date1": True, "Date 2": False, "Date3": False}
+@app.route('/book_available_times/<ResourceID>', methods = ['GET', 'POST'])
+def book_available_times(ResourceID = "0"):
+    #print("reached")
+    if request.method == "POST":
+        dateTime = request.form.get('time').split(",")
+        date, time = dateTime[0], dateTime[1] 
+        #print(time)
+        resType = request.form.get('resType')
+        valuesDict = {'UserID': "23", 'DateBookedOn':date, 'TimeBookedAt':time, 'ResourceID':ResourceID, 'ResourceType':resType}
+        process_data.insert_into_bookings(db, valuesDict)
+        previous_url = request.referrer
+        return redirect(previous_url)
 
+    # for GET requests
+    where = "ResourceID = {}".format(ResourceID)
+    datesBooked = get_data.get_filtered_data(db, "DateBookedOn, TimeBookedAt", "Bookings", where)
+    ret = process_data.get_available_datetimes(datesBooked, "08:00:00", "22:00:00")
+    #print(ret)
+    return ret
 
 @app.errorhandler(404)
 def not_found_error(error):
