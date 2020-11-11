@@ -58,11 +58,11 @@ def home():
 
 @app.route('/gym')
 def bothGym():
-    if 'usr' not in session:
-        print("\nNot logged in...")
-    else:
-        print("\nUser is logged in...")
-        print("Email:", session['email'])
+    # if 'usr' not in session:
+    #     print("\nNot logged in...")
+    # else:
+    #     print("\nUser is logged in...")
+    #     print("Email:", session['email'])
     all_resources = get_data.get_all_resources(db)
     return render_template('pages/gym.html', data=all_resources)
 
@@ -191,13 +191,18 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/get_available_times/<ResourceID>')
-def get_available_times(ResourceID):
-    #print("reached")
+@app.route('/book_available_times/<ResourceID>', methods = ['GET', 'POST'])
+def book_available_times(ResourceID = 0):
+    print("reached")
+    if request.method == "POST":
+        process_data.insert_to_db()
+        return "done"
+
+    # for GET requests
     where = "ResourceID = {}".format(ResourceID)
     datesBooked = get_data.get_filtered_data(db, "DateBookedOn, TimeBookedAt", "Bookings", where)
     ret = process_data.get_available_datetimes(datesBooked, "08:00:00", "22:00:00")
-    print(ret)
+    #print(ret)
     return ret
 
 @app.errorhandler(404)

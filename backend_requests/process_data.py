@@ -31,6 +31,8 @@ def get_available_datetimes(bookedDateTimes, gymStartTime, gymEndTime):
     # This returns a dict with keys as dates and values as a list of available times
     return ret
 
+def insert_to_db():
+    print("insert success")
 
 if __name__ == '__main__':
     data = [{"DateBookedOn" : datetime.strptime("11/05/2020", "%m/%d/%Y"), "TimeBookedAt" : datetime.strptime("11:00:00", "%H:%M:%S")}, 
