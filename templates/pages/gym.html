@@ -32,19 +32,19 @@ content %}
         $(this).parents("tr").find(".resID").text(); 
         var resName = 
         $(this).parents("tr").find(".resName").text(); 
-        var form = "<form action={{url_for('book_available_times', ResourceID = 0)}}, method = 'POST'><p><b>Please select a time slot to reserve:</b></p>";
+        var form = "<form action={{url_for('book_available_times', ResourceID = 0)}} method = 'POST' id = reserveForm><p><b>Please select a time slot to reserve:</b></p>";
         var route = "/book_available_times/"+ resID;
         $.getJSON(route,
             function(data) {
             $.each(data, function (date, times) {
               form += "<p><i>" + date + "</i></p>";
               $.each(times, function (i, val) {
-                form += "<input type='radio' id=time" + i + " name='time' value=" + val + ">";
+                form += "<input type='radio' class = 'radio-button' id=time" + i + " name='time' value=" + val + ">";
                 form += "<label for=time " + i + ">" + val + "</label><br>";
               })
               form += "<br>";
             })
-            form += "<input type='submit' value='Submit'></form>";
+            form += "</form>";
             //alert(form);
             $("#dateForm").empty(); 
             $("#dateForm").append(form); 
@@ -99,7 +99,7 @@ content %}
         </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default">
+          <button type="submit" class="btn btn-default" form = reserveForm>
             Reserve
           </button>
           <button type="button" class="btn btn-default" data-dismiss="modal">
