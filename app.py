@@ -5,7 +5,9 @@
 from flask import Flask, render_template, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
 from flask.json import jsonify
-from backend_requests import get_resources
+from backend_requests import get_data
+
+
 import logging
 from logging import Formatter, FileHandler
 from forms import *
@@ -63,9 +65,29 @@ def bothGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    all_resources = get_resources.get_all_resources(db)
+    all_resources = get_data.get_all_resources(db)
     return render_template('pages/gym.html', data=all_resources)
 
+@app.route('/Classes')
+def bothClasses():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+    all_classes = get_data.get_all_classes(db)
+    return render_template('pages/Classes.html', data=all_classes)
+
+@app.route('/wilsonClasses')
+def wilsonClass():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+    wilson_classes = get_data.get_fitlered_classes(
+        db, filter_on='ClassLocation', filter_val='Kville')
+    return render_template('pages/wilsonClasses.html', data=wilson_classes)
 
 
 @app.route('/brodie')
@@ -79,7 +101,7 @@ def brodieGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    brodie_resources = get_resources.get_fitlered_resources(
+    brodie_resources = get_data.get_fitlered_resources(
         db, filter_on='Location', filter_val='Brodie')
     return render_template('pages/brodieEquipment.html', data=brodie_resources)
 
@@ -94,7 +116,7 @@ def wilsonGym():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    wilson_resources = get_resources.get_fitlered_resources(
+    wilson_resources = get_data.get_fitlered_resources(
         db, filter_on='Location', filter_val='Wilson')
     return render_template('pages/wilsonEquipment.html', data=wilson_resources)
 
