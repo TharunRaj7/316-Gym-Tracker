@@ -6,7 +6,6 @@ def get_all_resources(db):
     r = get_dict_from_result(db_result)
     return r
 
-
 def get_fitlered_resources(db, filter_on, filter_val):
     """
     Takes in db engine, column to filter on, value to filter to
@@ -14,6 +13,7 @@ def get_fitlered_resources(db, filter_on, filter_val):
     """
     query = "select * from Resources where {} = {}".format(
         filter_on, "'" + filter_val + "'")
+
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
@@ -23,7 +23,7 @@ def get_fitlered_resources(db, filter_on, filter_val):
 def get_dict_from_result(db_result):
     d, a = {}, []
     for rowproxy in db_result:
-        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)]
+        # rowproxy.items() returns an array like [(key0, value0), (key1, value1)
         for column, value in rowproxy.items():
             # build up the dictionary
             d = {**d, **{column: value}}
