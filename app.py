@@ -58,52 +58,58 @@ def home():
 
 @app.route('/gym')
 def bothGym():
-    # if 'usr' not in session:
-    #     print("\nNot logged in...")
-    # else:
-    #     print("\nUser is logged in...")
-    #     print("Email:", session['email'])
+    if 'usr' not in session:
+        print("\nNot logged in...")
+        userLoggedIn = False
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+        userLoggedIn = True
     all_resources = []
     all_resources.append("Equipment Information")
     all_resources.append(get_data.get_all_resources(db))
-    return render_template('pages/gym.html', data=all_resources)
-
+    return render_template('pages/gym.html', data=all_resources, loggedIn=userLoggedIn)
 
 
 @app.route('/brodie')
 def brodie():
     return render_template('pages/brodie.html')
 
+
 @app.route('/brodieEquipment')
 def brodieGym():
     if 'usr' not in session:
-        print("\nNot logged in...")
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLoggedIn = True
     brodie_resources = []
     brodie_resources.append("Brodie Equipment")
     brodie_resources.append(get_data.get_filtered_data(
-        db, "*", table = "Resources", where = "Location = 'Brodie'"))
-    return render_template('pages/gym.html', data=brodie_resources)
+        db, "*", table="Resources", where="Location = 'Brodie'"))
+    return render_template('pages/gym.html', data=brodie_resources, loggedIn=userLoggedIn)
 
 
 @app.route('/wilson')
 def wilson():
     return render_template('pages/wilson.html')
 
+
 @app.route('/wilsonEquipment')
 def wilsonGym():
     if 'usr' not in session:
         print("\nNot logged in...")
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLoggedIn = True
     wilson_resources = []
     wilson_resources.append("Wilson Equipment")
     wilson_resources.append(get_data.get_filtered_data(
-        db, "*", table = "Resources", where = "Location = 'Wilson'"))
-    return render_template('pages/gym.html', data=wilson_resources)
+        db, "*", table="Resources", where="Location = 'Wilson'"))
+    return render_template('pages/gym.html', data=wilson_resources, loggedIn=userLoggedIn)
 
 
 @app.route('/about')
@@ -151,7 +157,7 @@ def signUpCompleted():
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
-        #TODO: for protecting routes
+        # TODO: for protecting routes
         user_id = user['idToken']
         session['usr'] = user_id
         user_email = user['email'] if user is not None else None
@@ -167,7 +173,7 @@ def signInCompleted():
         email = request.form.get('name')
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
-        #TODO: for protecting routes
+        # TODO: for protecting routes
         user_id = user['idToken'] if user is not None else None
         user_email = user['email'] if user is not None else None
         session['usr'] = user_id
@@ -197,25 +203,29 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/book_available_times/<ResourceID>', methods = ['GET', 'POST'])
-def book_available_times(ResourceID = "0"):
-    #print("reached")
+@app.route('/book_available_times/<ResourceID>', methods=['GET', 'POST'])
+def book_available_times(ResourceID="0"):
+    # print("reached")
     if request.method == "POST":
         dateTime = request.form.get('time').split(",")
-        date, time = dateTime[0], dateTime[1] 
-        #print(time)
+        date, time = dateTime[0], dateTime[1]
+        # print(time)
         resType = request.form.get('resType')
-        valuesDict = {'UserID': "23", 'DateBookedOn':date, 'TimeBookedAt':time, 'ResourceID':ResourceID, 'ResourceType':resType}
+        valuesDict = {'UserID': "23", 'DateBookedOn': date, 'TimeBookedAt': time,
+                      'ResourceID': ResourceID, 'ResourceType': resType}
         process_data.insert_into_bookings(db, valuesDict)
         previous_url = request.referrer
         return redirect(previous_url)
 
     # for GET requests
     where = "ResourceID = {}".format(ResourceID)
-    datesBooked = get_data.get_filtered_data(db, "DateBookedOn, TimeBookedAt", "Bookings", where)
-    ret = process_data.get_available_datetimes(datesBooked, "08:00:00", "22:00:00")
-    #print(ret)
+    datesBooked = get_data.get_filtered_data(
+        db, "DateBookedOn, TimeBookedAt", "Bookings", where)
+    ret = process_data.get_available_datetimes(
+        datesBooked, "08:00:00", "22:00:00")
+    # print(ret)
     return ret
+
 
 @app.errorhandler(404)
 def not_found_error(error):

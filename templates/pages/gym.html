@@ -19,7 +19,12 @@ content %}
       <td class = "resName">{{row['ResourceName']}}</td>
       <td class = "resType">{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
+      {% if loggedIn==True %}
       <td><a href=#></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Reserve Now!</button></td>
+      {% endif %}
+      {% if loggedIn==False %}
+      <td><button type="button" class='btn btn-primary book-resource' disabled>Please login to book!</button></td>
+      {% endif %}
     </tr>
     {% endfor %}
   </table>
