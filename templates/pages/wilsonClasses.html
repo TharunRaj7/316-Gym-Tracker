@@ -1,0 +1,81 @@
+{% extends 'layouts/main.html' %} {% block title %}About{% endblock %} {% block
+content %}
+
+<div class="page-header" style="text-align:center;">
+  <h1>Wilson Classes</h1>
+</div>
+<div>
+  <table class="table table-bordered table-striped table-hover">
+    <tr>
+      <th>Day</th>
+      <th>Class Type</th>
+      <th>Time</th>
+      <th>Location</th>
+      <th>EnrollmentCap</th>
+      <th>Booking</th>
+    </tr>
+    {% for row in data%}
+    <tr>
+      <td>{{row['ClassDay']}}</td>
+      <td>{{row['ClassType']}}</td>
+      <td>{{row['ClassTime']}}</td>
+      <td>{{row['ClassLocation']}}</td>
+      <td>{{row['EnrollmentCap']}}</td>
+      <td><a href=# id=test><button class='btn btn-primary'>Reserve Now!</button></a></td>
+
+    </tr>
+    {% endfor %}
+  </table>
+   <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
+          </button>
+          <h4 class="modal-title">Schedule</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="usr">Class Name:</label>
+            <input type="text" class="form-control" id="usr" />
+          </div>
+          <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" rows="5" id="comment"></textarea>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" value="" />Date 1</label>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" value="" />Date 2</label>
+          </div>
+          <div class="checkbox disabled">
+            <label
+              ><input type="checkbox" value="" id="date3" checked disabled />Date 3</label
+            >
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+        $(function() {
+          $('a#test').bind('click', function() {
+            $.getJSON('/background_process_test',
+                function(data) {
+                  $("#myModal").modal();
+            });
+            return false;
+          });
+        });
+</script>
+{% endblock %}
