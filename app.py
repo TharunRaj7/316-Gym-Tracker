@@ -1,10 +1,10 @@
+
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, current_app, session, redirect
+from flask import Flask, render_template, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
-from backend_requests import get_data, process_data
 from flask.json import jsonify
 from backend_requests import get_data
 import logging
@@ -61,34 +61,41 @@ def home():
 def bothGym():
     if 'usr' not in session:
         print("\nNot logged in...")
-        userLoggedIn = False
+        userLog = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-        userLoggedIn = True
+        userLog = True
     all_resources = get_data.get_all_resources(db)
-    return render_template('pages/gym.html', data=all_resources, loggedIn=userLoggedIn)
+    return render_template('pages/gym.html', data=all_resources, loggedIn=userLog)
+
 
 @app.route('/Classes')
 def bothClasses():
     if 'usr' not in session:
         print("\nNot logged in...")
+        userLog = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLog = True
     all_classes = get_data.get_all_classes(db)
-    return render_template('pages/Classes.html', data=all_classes)
+    return render_template('pages/Classes.html', data=all_classes, loggedIn=userLog)
+
 
 @app.route('/wilsonClasses')
 def wilsonClass():
     if 'usr' not in session:
         print("\nNot logged in...")
+        userLog = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLog = True
     wilson_classes = get_data.get_fitlered_classes(
         db, filter_on='ClassLocation', filter_val='Kville')
-    return render_template('pages/wilsonClasses.html', data=wilson_classes)
+    return render_template('pages/wilsonClasses.html', data=wilson_classes, loggedIn=userLog)
+
 
 @app.route('/brodie')
 def brodie():
@@ -98,13 +105,16 @@ def brodie():
 @app.route('/brodieEquipment')
 def brodieGym():
     if 'usr' not in session:
-        userLoggedIn = False
+        print("\nNot logged in...")
+        userLog = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLog = True
     brodie_resources = get_data.get_fitlered_resources(
         db, filter_on='Location', filter_val='Brodie')
-    return render_template('pages/brodieEquipment.html', data=brodie_resources)
+    return render_template('pages/brodieEquipment.html', data=brodie_resources, loggedIn=userLog)
+
 
 @app.route('/wilson')
 def wilson():
@@ -115,14 +125,14 @@ def wilson():
 def wilsonGym():
     if 'usr' not in session:
         print("\nNot logged in...")
-        userLoggedIn = False
+        userLog = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-        userLoggedIn = True
+        userLog = True
     wilson_resources = get_data.get_fitlered_resources(
         db, filter_on='Location', filter_val='Wilson')
-    return render_template('pages/gym.html', data=wilson_resources, loggedIn=userLoggedIn)
+    return render_template('pages/wilsonEquipment.html', data=wilson_resources, loggedIn=userLog)
 
 
 @app.route('/about')
@@ -216,28 +226,10 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/book_available_times/<ResourceID>', methods=['GET', 'POST'])
-def book_available_times(ResourceID="0"):
-    # print("reached")
-    if request.method == "POST":
-        dateTime = request.form.get('time').split(",")
-        date, time = dateTime[0], dateTime[1]
-        # print(time)
-        resType = request.form.get('resType')
-        valuesDict = {'UserID': "23", 'DateBookedOn': date, 'TimeBookedAt': time,
-                      'ResourceID': ResourceID, 'ResourceType': resType}
-        process_data.insert_into_bookings(db, valuesDict)
-        previous_url = request.referrer
-        return redirect(previous_url)
-
-    # for GET requests
-    where = "ResourceID = {}".format(ResourceID)
-    datesBooked = get_data.get_filtered_data(
-        db, "DateBookedOn, TimeBookedAt", "Bookings", where)
-    ret = process_data.get_available_datetimes(
-        datesBooked, "08:00:00", "22:00:00")
-    # print(ret)
-    return ret
+@app.route('/background_process_test')
+def background_process_test():
+    print("Hello")
+    return {"date1": True, "Date 2": False, "Date3": False}
 
 
 @app.errorhandler(404)
