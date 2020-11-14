@@ -13,7 +13,7 @@ def get_all_classes(db):
     r = get_dict_from_result(db_result)
     return r
 
-def get_fitlered_classes(db, filter_on, filter_val):
+def get_filtered_classes (db, filter_on, filter_val):
     """
     Takes in db engine, column to filter on, value to filter to
     (select * from resources where filter_on = 'filter_val')
