@@ -6,6 +6,25 @@ def get_all_resources(db):
     r = get_dict_from_result(db_result)
     return r
 
+def get_all_classes(db):
+    query = 'select * from ClassSchedule'
+    db.engine.execute(query)
+    db_result = db.engine.execute(query)
+    r = get_dict_from_result(db_result)
+    return r
+
+def get_fitlered_classes(db, filter_on, filter_val):
+    """
+    Takes in db engine, column to filter on, value to filter to
+    (select * from resources where filter_on = 'filter_val')
+    """
+    query = "select * from ClassSchedule where {} = {}".format(
+        filter_on, "'" + filter_val + "'")
+    db.engine.execute(query)
+    db_result = db.engine.execute(query)
+    r = get_dict_from_result(db_result)
+    return r
+
 
 def get_filtered_data(db, select, table, where):
     query = "select {} from {} where {}".format(
