@@ -111,6 +111,7 @@ def wilsonGym():
         db, "*", table="Resources", where="Location = 'Wilson'"))
     return render_template('pages/gym.html', data=wilson_resources, loggedIn=userLoggedIn)
 
+
 @app.route('/Classes')
 def bothClasses():
     if 'usr' not in session:
@@ -119,7 +120,8 @@ def bothClasses():
         print("\nUser is logged in...")
         print("Email:", session['email'])
     all_classes = get_data.get_all_classes(db)
-    return render_template('pages/Classes.html', header = "All Classes", data=all_classes)
+    return render_template('pages/classes.html', header="All Classes", data=all_classes)
+
 
 @app.route('/wilsonClasses')
 def wilsonClass():
@@ -130,7 +132,7 @@ def wilsonClass():
         print("Email:", session['email'])
     wilson_classes = get_data.get_filtered_classes(
         db, filter_on='ClassLocation', filter_val='Kville')
-    return render_template('pages/Classes.html', header = "Wilson Classes", data=wilson_classes)
+    return render_template('pages/classes.html', header="Wilson Classes", data=wilson_classes)
 
 
 @app.route('/brodieClasses')
@@ -142,7 +144,7 @@ def brodieClass():
         print("Email:", session['email'])
     wilson_classes = get_data.get_filtered_classes(
         db, filter_on='ClassLocation', filter_val='Brodie')
-    return render_template('pages/Classes.html', header = "Brodie Classes", data=wilson_classes)
+    return render_template('pages/classes.html', header="Brodie Classes", data=wilson_classes)
 
 
 @app.route('/about')
