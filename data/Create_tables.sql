@@ -42,23 +42,23 @@ CREATE TABLE Enrollments
  FOREIGN KEY (UserID) REFERENCES User(ResourceID)
 );
 
-INSERT INTO ClassSchedule VALUES(1,'Yoga','Monday','16:30:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(2,'Zumba','Monday','17:30:00','Zoom',20);
+INSERT INTO ClassSchedule VALUES(1,'Yoga','Monday','16:30:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(2,'Zumba','Monday','17:30:00','Brodie',20);
 INSERT INTO ClassSchedule VALUES(3,'Kickboxing','Monday','18:00:00','Kville',20);
-INSERT INTO ClassSchedule VALUES(4,'Pilates Bar','Tuesday','16:30:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(5,'Rhythm Cardio + Core','Tuesday','17:30:00','Zoom',20);
+INSERT INTO ClassSchedule VALUES(4,'Pilates Bar','Tuesday','16:30:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(5,'Rhythm Cardio + Core','Tuesday','17:30:00','Brodie',20);
 INSERT INTO ClassSchedule VALUES(6,'Outdoor HIIT','Tuesday','18:00:00','Kville',20);
-INSERT INTO ClassSchedule VALUES(7,'Rhythm Strength/ MP','Wednesday','16:30:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(8,'Power Yoga','Wednesday','17:30:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(9,'Pilates Burn','Thursday','16:30:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(10,'Zumba','Thursday','17:30:00','Zoom',20);
+INSERT INTO ClassSchedule VALUES(7,'Rhythm Strength/ MP','Wednesday','16:30:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(8,'Power Yoga','Wednesday','17:30:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(9,'Pilates Burn','Thursday','16:30:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(10,'Zumba','Thursday','17:30:00','Brodie',20);
 INSERT INTO ClassSchedule VALUES(11,'Outdoor HIIT','Thursday','18:00:00','Kville',20);
-INSERT INTO ClassSchedule VALUES(12,'Hatha Yoga','Friday','16:30:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(13,'Express HIIT','Friday','17:30:00','Zoom',20);
+INSERT INTO ClassSchedule VALUES(12,'Hatha Yoga','Friday','16:30:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(13,'Express HIIT','Friday','17:30:00','Brodie',20);
 INSERT INTO ClassSchedule VALUES(14,'Outdoor Yoga','Saturday','10:15:00','Kville',20);
-INSERT INTO ClassSchedule VALUES(15,'Kickboxing','Saturday','12:00:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(16,'Rhythm HIIT','Sunday','11:00:00','Zoom',20);
-INSERT INTO ClassSchedule VALUES(17,'Power Yoga','Sunday','17:00:00','Zoom',20);
+INSERT INTO ClassSchedule VALUES(15,'Kickboxing','Saturday','12:00:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(16,'Rhythm HIIT','Sunday','11:00:00','Brodie',20);
+INSERT INTO ClassSchedule VALUES(17,'Power Yoga','Sunday','17:00:00','Brodie',20);
 
 
 -- CREATION OF TRIGGERS 

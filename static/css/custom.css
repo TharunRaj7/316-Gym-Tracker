@@ -1,0 +1,12 @@
+.background {
+    background-image: url('https://i.ibb.co/dfgc5hZ/Gym-Background-Final.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: -1;
+}
+
+.radio-button {
+    margin-right:10px;
+  }
+  
