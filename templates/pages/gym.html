@@ -2,7 +2,7 @@
 content %}
 
 <div class="page-header" style="text-align:center;">
-  <h1>{{ data[0] }}</h1>
+<h1>Equipment Information</h1>
 </div>
 <div>
   <table class="table table-bordered table-striped table-hover">
@@ -13,57 +13,24 @@ content %}
       <th>Location</th>
       <th>Booking</th>
     </tr>
-    {% for row in data[1]%}
+    {% for row in data%}
     <tr>
-      <td class = "resID">{{row['ResourceID']}}</td>
-      <td class = "resName">{{row['ResourceName']}}</td>
-      <td class = "resType">{{row['ResourceType']}}</td>
+      <td>{{row['ResourceID']}}</td>
+      <td>{{row['ResourceName']}}</td>
+      <td>{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
       {% if loggedIn==True %}
-      <td><a href=#></a><button type="button" class='btn btn-primary book-resource' data-toggle="modal" data-target="#myModal">Reserve Now!</button></td>
+      <td><a href=# id=test><button class='btn btn-primary'>Reserve Now!</button></a></td>      
       {% endif %}
       {% if loggedIn==False %}
       <td><button type="button" class='btn btn-primary book-resource' disabled>Please login to book!</button></td>
       {% endif %}
+      
+
     </tr>
     {% endfor %}
   </table>
-
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script type = text/javascript>
-    $(document).ready(function() {
-      $(".book-resource").on("click", function(){ 
-        var resID = 
-        $(this).parents("tr").find(".resID").text(); 
-        var resName = 
-        $(this).parents("tr").find(".resName").text(); 
-        var resType = 
-        $(this).parents("tr").find(".resType").text();
-        var route = "/book_available_times/"+ resID;
-        var form = "<form action=" + route + " method = 'POST' id = 'reserveForm'><p><b>Please select a time slot to reserve:</b></p><br>";
-        $.getJSON(route,
-            function(data) {
-            $.each(data, function (date, times) {
-              form += "<p><i>" + date + "</i></p>";
-              $.each(times, function (i, val) {
-                form += "<input type='radio' class = 'radio-button' style = 'margin-right:10px' id=time" + i + " name ='time' value='" + date + "," + val + "'>";
-                form += "<label for=time " + i + " style = 'font-weight:normal'>" + val + "</label><br>";
-              })
-              form += "<br>";
-            })
-            form += "<input type = 'hidden', name = 'resType', value = '" + resType + "'></form>"; //adding resourceType as a hidden input
-            //alert(resType);
-            $("#dateForm").empty(); 
-            $("#dateForm").append(form); 
-        });
-        //alert(form)
-        $("#dispName").empty(); 
-        $("#dispName").append(resName); 
-      });
-    });
-</script>
- 
-    <div class="modal fade" id="myModal" role="dialog">
+   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -74,41 +41,27 @@ content %}
           <h4 class="modal-title">Schedule</h4>
         </div>
         <div class="modal-body">
-          <div class="form-group" id = "dispName">
-            <label for="usr">Placeholder</label>
+          <div class="form-group">
+            <label for="usr">Resource Name:</label>
+            <input type="text" class="form-control" id="usr" />
           </div>
-          <!-- <b>Time slots available for Reservation:</b> -->
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label for="comment">Comment:</label>
             <textarea class="form-control" rows="5" id="comment"></textarea>
-          </div> -->
-          <div class="dates-holder" id = "dateForm">
-            <!-- <form action="/action_page.php">
-              <p>Please select your gender:</p>
-              <input type="radio" id="male" name="gender" value="male">
-              <label for="male">Male</label><br>
-              <input type="radio" id="female" name="gender" value="female">
-              <label for="female">Female</label><br>
-              <input type="radio" id="other" name="gender" value="other">
-              <label for="other">Other</label>
-            
-              <br>  
-            
-              <p>Please select your age:</p>
-              <input type="radio" id="age1" name="age" value="30">
-              <label for="age1">0 - 30</label><br>
-              <input type="radio" id="age2" name="age" value="60">
-              <label for="age2">31 - 60</label><br>  
-              <input type="radio" id="age3" name="age" value="100">
-              <label for="age3">61 - 100</label><br><br>
-              <input type="submit" value="Submit">
-            </form> -->
-        </div>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" value="" />Date 1</label>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" value="" />Date 2</label>
+          </div>
+          <div class="checkbox disabled">
+            <label
+              ><input type="checkbox" value="" id="date3" checked disabled />Date 3</label
+            >
+          </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-default" form = reserveForm>
-            Reserve
-          </button>
           <button type="button" class="btn btn-default" data-dismiss="modal">
             Close
           </button>
@@ -117,5 +70,16 @@ content %}
     </div>
   </div>
 </div>
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+        $(function() {
+          $('a#test').bind('click', function() {
+            $.getJSON('/background_process_test',
+                function(data) {
+                  $("#myModal").modal();
+            });
+            return false;
+          });
+        });
+</script>
 {% endblock %}

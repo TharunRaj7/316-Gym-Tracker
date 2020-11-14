@@ -1,36 +1,32 @@
 {% extends 'layouts/main.html' %} {% block title %}About{% endblock %} {% block
 content %}
 
-<div class="page-header" style="text-align:center;"> 
-  <h1>Wilson Equipment</h1>
+<div class="page-header" style="text-align:center;">
+  <h1>Wilson Classes</h1>
 </div>
 <div>
   <table class="table table-bordered table-striped table-hover">
     <tr>
-      <th>ResourceID</th>
-      <th>ResourceName</th>
-      <th>ResourceType</th>
+      <th>Day</th>
+      <th>Class Type</th>
+      <th>Time</th>
       <th>Location</th>
+      <th>EnrollmentCap</th>
       <th>Booking</th>
     </tr>
     {% for row in data%}
     <tr>
-      <td>{{row['ResourceID']}}</td>
-      <td>{{row['ResourceName']}}</td>
-      <td>{{row['ResourceType']}}</td>
-      <td>{{row['Location']}}</td>
-      {% if loggedIn==True %}
+      <td>{{row['ClassDay']}}</td>
+      <td>{{row['ClassType']}}</td>
+      <td>{{row['ClassTime']}}</td>
+      <td>{{row['ClassLocation']}}</td>
+      <td>{{row['EnrollmentCap']}}</td>
       <td><a href=# id=test><button class='btn btn-primary'>Reserve Now!</button></a></td>
-      {% endif %}
-      {% if loggedIn==False %}
-      <td><button type="button" class='btn btn-primary book-resource' disabled>Please login to book!</button></td>
-      {% endif %}
-      
-    </tr>
 
+    </tr>
     {% endfor %}
   </table>
-    <div class="modal fade" id="myModal" role="dialog">
+   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -42,7 +38,7 @@ content %}
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="usr">Resource Name:</label>
+            <label for="usr">Class Name:</label>
             <input type="text" class="form-control" id="usr" />
           </div>
           <div class="form-group">
