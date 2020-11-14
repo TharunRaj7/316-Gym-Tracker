@@ -128,7 +128,7 @@ def wilsonClass():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    wilson_classes = get_data.get_fitlered_classes(
+    wilson_classes = get_data.get_filtered_classes(
         db, filter_on='ClassLocation', filter_val='Kville')
     return render_template('pages/Classes.html', header = "Wilson Classes", data=wilson_classes)
 
@@ -140,7 +140,7 @@ def brodieClass():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    wilson_classes = get_data.get_fitlered_classes(
+    wilson_classes = get_data.get_filtered_classes(
         db, filter_on='ClassLocation', filter_val='Brodie')
     return render_template('pages/Classes.html', header = "Brodie Classes", data=wilson_classes)
 
