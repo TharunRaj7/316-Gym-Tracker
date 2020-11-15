@@ -42,10 +42,12 @@ def get_user_from_email(db, user_email):
     query = "select * from User where Email='{}'".format(user_email)
     db.engine.execute(query)
     db_result = db.engine.execute(query)
-    # I take only the first record from select *
+    results_dict_list = get_dict_from_result(db_result)
+    if not results_dict_list: # no records matched
+        return None
+    # I return only the first [0] record from select *
     # Since hopefully emails are unique, there should be only 1 anyway
-    r = get_dict_from_result(db_result)[0]
-    return r
+    return results_dict_list[0]
 
 def get_all_users(db):
     """
