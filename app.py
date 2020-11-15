@@ -168,6 +168,10 @@ def profile():
         print("\nUser is logged in...")
         print("Email:", session['email'])
     user_record = get_data.get_user_from_email(db, session['email'])
+    if user_record is None:
+        #TODO: This means didn't find any users with the email used to log in. 
+        # Render 404?
+        return render_template('errors/404.html')
     return render_template('pages/profile.html', userEmail=user_record['Email'], userDisplayName=user_record['Name'])
 
 
