@@ -48,6 +48,7 @@ def insert_into_bookings(db, valuesDict):
     query += valuesDict['UserID'] + ",'" + date + "','" + time + "'," + \
         valuesDict['ResourceID'] + ",'" + valuesDict['ResourceType'] + "')"
     print(query)
+    db.engine.execute(query)
 
 
 def insert_into_enrollments(db, valuesDict):
