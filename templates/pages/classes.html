@@ -80,7 +80,10 @@
               $("#testing").bind('click', function() {
                 var resID = 
                 $(this).parents("tr").find(".classID").text(); 
-                var route = "/book_classes/"+ resID;
+                var resDate = 
+                $(this).parents("tr").find(".classDate").text(); 
+                var parameters=resID+"/"+resDate
+                var route = "/book_classes/"+ parameters
                     $.post(route, function( data ) {
                    return true
                   });
