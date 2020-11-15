@@ -76,6 +76,14 @@ def brodie():
     return render_template('pages/brodie.html')
 
 
+@app.route('/logout')
+def logout():
+    usr = session.pop('usr', None)
+    user_email = session.pop('email', None)
+    print("Logging user {} out...".format(user_email))
+    return render_template('pages/placeholder.home.html')
+
+
 @app.route('/brodieEquipment')
 def brodieGym():
     if 'usr' not in session:
@@ -206,6 +214,8 @@ def signUpCompleted():
         user = auth.create_user_with_email_and_password(email, password)
         process_data.insert_into_users(db, username, email)
         if user is not None:
+            # NOTE: if you add more stuff to session during login,
+            # then also edit logout to remove that stuff
             user_id = user['idToken']
             session['usr'] = user_id
             user_email = user['email'] if user is not None else None
@@ -220,6 +230,8 @@ def signInCompleted():
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
         if user is not None:
+            # NOTE: if you add more stuff to session during login,
+            # then also edit logout to remove that stuff
             user_id = user['idToken']
             session['usr'] = user_id
             user_email = user['email'] if user is not None else None
