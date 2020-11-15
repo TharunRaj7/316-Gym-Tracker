@@ -52,6 +52,23 @@ def insert_to_db(db, table, schema, values):
     db.engine.execute(query)
     #print(query)
 
+def validate_username(user_name):
+    """
+    Ensures username is only alphabets. Called in signup function in app.py
+    """
+    return user_name.isalpha()
+
+def insert_into_users(db, user_name, user_email):
+    """
+    Users: ID, Name, Email, AccountCreated
+    We calculate AccountCreated in this function
+    """
+    account_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    query_string = "insert into User (Name, Email, AccountCreated) values ("
+    query_string += "'{name}', '{email}', '{accountcreated}');".format(name=user_name, email=user_email, accountcreated = account_created)
+    print(query_string)
+    db.engine.execute(query_string)
+
 
 if __name__ == '__main__':
     data = [{"DateBookedOn" : datetime.strptime("11/05/2020", "%m/%d/%Y"), "TimeBookedAt" : datetime.strptime("11:00:00", "%H:%M:%S")}, 
