@@ -125,35 +125,41 @@ def wilsonGym():
 def bothClasses():
     if 'usr' not in session:
         print("\nNot logged in...")
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLoggedIn = True
     all_classes = get_data.get_all_classes(db)
-    return render_template('pages/classes.html', header="All Classes", data=all_classes)
+    return render_template('pages/classes.html', header="All Classes", data=all_classes, loggedIn=userLoggedIn)
 
 
 @app.route('/wilsonClasses')
 def wilsonClass():
     if 'usr' not in session:
         print("\nNot logged in...")
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLoggedIn = True
     wilson_classes = get_data.get_filtered_classes(
         db, filter_on='ClassLocation', filter_val='Kville')
-    return render_template('pages/classes.html', header="Wilson Classes", data=wilson_classes)
+    return render_template('pages/classes.html', header="Wilson Classes", data=wilson_classes, loggedIn=userLoggedIn)
 
 
 @app.route('/brodieClasses')
 def brodieClass():
     if 'usr' not in session:
         print("\nNot logged in...")
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+        userLoggedIn = True
     wilson_classes = get_data.get_filtered_classes(
         db, filter_on='ClassLocation', filter_val='Brodie')
-    return render_template('pages/classes.html', header="Brodie Classes", data=wilson_classes)
+    return render_template('pages/classes.html', header="Brodie Classes", data=wilson_classes, loggedIn=userLoggedIn)
 
 
 @app.route('/about')
@@ -178,7 +184,7 @@ def profile():
         print("Email:", session['email'])
     user_record = get_data.get_user_from_email(db, session['email'])
     if user_record is None:
-        #TODO: This means didn't find any users with the email used to log in. 
+        # TODO: This means didn't find any users with the email used to log in.
         # Render 404?
         return render_template('errors/404.html')
     return render_template('pages/profile.html', userEmail=user_record['Email'], userDisplayName=user_record['Name'])
@@ -210,7 +216,7 @@ def signUpCompleted():
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         if password != confirmpass:
-            #TODO: display error saying passwords don't match?
+            # TODO: display error saying passwords don't match?
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
@@ -284,6 +290,17 @@ def book_available_times(ResourceID="0"):
         datesBooked, "08:00:00", "22:00:00")
     # print(ret)
     return ret
+
+
+@app.route('/book_classes/<ResourceID>', methods=['POST'])
+def book_classes(ResourceID="0"):
+    # print("reached")
+    if request.method == "POST":
+        valuesDict = {'Email': session['email'],
+                      'ResourceID': ResourceID}
+        process_data.insert_into_enrollments(db, valuesDict)
+        previous_url = request.referrer
+        return redirect(previous_url)
 
 
 @app.errorhandler(404)

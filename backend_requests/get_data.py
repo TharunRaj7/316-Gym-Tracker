@@ -7,19 +7,20 @@ def get_all_resources(db):
 
 
 def get_all_classes(db):
-    query = 'select * from ClassSchedule'
+    query = 'select * from ClassSchedule where EnrollmentCap > 0'
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
     return r
     
 
-def get_filtered_classes (db, filter_on, filter_val):
+
+def get_filtered_classes(db, filter_on, filter_val):
     """
     Takes in db engine, column to filter on, value to filter to
     (select * from resources where filter_on = 'filter_val')
     """
-    query = "select * from ClassSchedule where {} = {}".format(
+    query = "select * from ClassSchedule where {} = {} AND EnrollmentCap > 0".format(
         filter_on, "'" + filter_val + "'")
     db.engine.execute(query)
     db_result = db.engine.execute(query)
@@ -35,6 +36,7 @@ def get_filtered_data(db, select, table, where):
     r = get_dict_from_result(db_result)
     return r
 
+
 def get_user_from_email(db, user_email):
     """
     Once User signs in, we use this function to get User ID/record from email
@@ -44,11 +46,12 @@ def get_user_from_email(db, user_email):
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     results_dict_list = get_dict_from_result(db_result)
-    if not results_dict_list: # no records matched
+    if not results_dict_list:  # no records matched
         return None
     # I return only the first [0] record from select *
     # Since hopefully emails are unique, there should be only 1 anyway
     return results_dict_list[0]
+
 
 def get_all_users(db):
     """
@@ -59,6 +62,7 @@ def get_all_users(db):
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
     return r
+
 
 def get_dict_from_result(db_result):
     """
@@ -72,5 +76,3 @@ def get_dict_from_result(db_result):
             d = {**d, **{column: value}}
         a.append(d)
     return a
-
-
