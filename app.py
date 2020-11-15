@@ -80,6 +80,7 @@ def brodie():
 def logout():
     usr = session.pop('usr', None)
     user_email = session.pop('email', None)
+    session.pop('uid', None)
     print("Logging user {} out...".format(user_email))
     return render_template('pages/placeholder.home.html')
 
@@ -226,6 +227,8 @@ def signUpCompleted():
             session['usr'] = user_id
             user_email = user['email'] if user is not None else None
             session['email'] = user_email
+            user_record = get_data.get_user_from_email(db, user_email)
+            session['uid'] = user_record['ID']
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -242,6 +245,8 @@ def signInCompleted():
             session['usr'] = user_id
             user_email = user['email'] if user is not None else None
             session['email'] = user_email
+            user_record = get_data.get_user_from_email(db, user_email)
+            session['uid'] = user_record['ID']
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
@@ -270,7 +275,7 @@ def book_available_times(ResourceID="0"):
         date, time = dateTime[0], dateTime[1]
         # print(time)
         resType = request.form.get('resType')
-        valuesDict = {'UserID': "23", 'DateBookedOn': date, 'TimeBookedAt': time,
+        valuesDict = {'UserID': str(session['uid']), 'DateBookedOn': date, 'TimeBookedAt': time,
                       'ResourceID': ResourceID, 'ResourceType': resType}
         process_data.insert_into_bookings(db, valuesDict)
         previous_url = request.referrer
@@ -290,7 +295,7 @@ def book_available_times(ResourceID="0"):
 def book_classes(ResourceID="0", ResourceDate="00:00:00"):
     # print("reached")
     if request.method == "POST":
-        valuesDict = {'Email': session['email'],
+        valuesDict = {'UserID': str(session['uid']),
                       'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
         process_data.insert_into_enrollments(db, valuesDict)
         previous_url = request.referrer

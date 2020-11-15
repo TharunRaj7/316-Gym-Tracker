@@ -54,15 +54,11 @@ def insert_into_bookings(db, valuesDict):
 def insert_into_enrollments(db, valuesDict):
     date = valuesDict['DateBookedOn']
     ClassID = valuesDict['ResourceID']
-    Email = valuesDict['Email']
-    UserInfo = get_data.get_user_from_email(db, Email)
-    print(UserInfo)
-    UserID = UserInfo['ID']
-    print(UserID)
+    UserID = valuesDict['UserID']
     query = "insert into Enrollments (UserID, ClassID, ClassDate) values (" + "{UserID}".format(
-        UserID=UserID) + "," + ClassID + ", {date}".format(date=date) + ")"
-    print(query)
-    # db.engine.execute(query)
+        UserID=UserID) + "," + ClassID + ", '{date}'".format(date=date) + ")"
+    # print(query)
+    db.engine.execute(query)
     # db.engine.execute(updateQuery)
 
 
