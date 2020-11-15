@@ -167,7 +167,8 @@ def profile():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['email'])
+    user_record = get_data.get_user_from_email(db, session['email'])
+    return render_template('pages/profile.html', userEmail=user_record['Email'], userDisplayName=user_record['Name'])
 
 
 @app.route('/login')
@@ -185,19 +186,26 @@ def register():
 @app.route('/register', methods=["GET", "POST"])
 def signUpCompleted():
     if request.method == "POST":
+        username = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
         confirmpass = request.form.get('confirm')
+        if not process_data.validate_username(username):
+            #TODO: display error saying should be only letters. (HTML input regex?)
+            print("Invalid user name. Should be only alphabetic...")
+            form = RegisterForm(request.form)
+            return render_template('forms/register.html', form=form)
         if password != confirmpass:
+            #TODO: display error saying passwords don't match?
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
-        # TODO: for protecting routes
-        user_id = user['idToken']
-        session['usr'] = user_id
-        user_email = user['email'] if user is not None else None
-        session['email'] = user_email
-        # print(session)
+        process_data.insert_into_users(db, username, email)
+        if user is not None:
+            user_id = user['idToken']
+            session['usr'] = user_id
+            user_email = user['email'] if user is not None else None
+            session['email'] = user_email
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -207,14 +215,11 @@ def signInCompleted():
         email = request.form.get('name')
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
-        # TODO: for protecting routes
-        user_id = user['idToken'] if user is not None else None
-        user_email = user['email'] if user is not None else None
-        session['usr'] = user_id
-        session['email'] = user_email
-        # print(session)
-        # user = auth.refresh(user['refreshToken'])
-        # print(user)
+        if user is not None:
+            user_id = user['idToken']
+            session['usr'] = user_id
+            user_email = user['email'] if user is not None else None
+            session['email'] = user_email
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
