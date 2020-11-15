@@ -21,8 +21,12 @@
           <td>{{row['ClassTime']}}</td>
           <td>{{row['ClassLocation']}}</td>
           <td>{{row['EnrollmentCap']}}</td>
+          {% if loggedIn==True %}
           <td><a href=# id=test><button class='btn btn-primary'>Reserve Now!</button></a></td>
-    
+          {% endif %}
+          {% if loggedIn==False %}
+          <td><button type="button" class='btn btn-primary book-resource' disabled>Please login to book!</button></td>
+          {% endif %}
         </tr>
         {% endfor %}
       </table>
