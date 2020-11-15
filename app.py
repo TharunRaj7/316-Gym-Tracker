@@ -12,7 +12,7 @@ from forms import *
 import os
 from data.insert_resources import insertRes
 import pyrebase
-current_user = {}
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -167,7 +167,7 @@ def profile():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    return render_template('pages/profile.html', userEmail=current_user['user']['email'], userDisplayName=current_user['user']['displayName'])
+    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['email'])
 
 
 @app.route('/login')
@@ -198,7 +198,6 @@ def signUpCompleted():
         user_email = user['email'] if user is not None else None
         session['email'] = user_email
         # print(session)
-        current_user['user'] = user
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -214,8 +213,6 @@ def signInCompleted():
         session['usr'] = user_id
         session['email'] = user_email
         # print(session)
-        current_user['user'] = user
-        jsonify(current_user['user'])
         # user = auth.refresh(user['refreshToken'])
         # print(user)
         if user == None:
