@@ -7,6 +7,7 @@
     <div>
       <table class="table table-bordered table-striped table-hover">
         <tr>
+          <th>Class ID </th> 
           <th>Day</th>
           <th>Class Type</th>
           <th>Time</th>
@@ -16,13 +17,14 @@
         </tr>
         {% for row in data%}
         <tr>
+          <td class="classID">{{row['ClassID']}}</td>
           <td>{{row['ClassDay']}}</td>
           <td>{{row['ClassType']}}</td>
           <td>{{row['ClassTime']}}</td>
           <td>{{row['ClassLocation']}}</td>
           <td>{{row['EnrollmentCap']}}</td>
           {% if loggedIn==True %}
-          <td><a href=# id=test><button class='btn btn-primary'>Reserve Now!</button></a></td>
+          <td><a href=# id='testing'><button class='btn btn-primary'>Reserve Now!</button></a></td>
           {% endif %}
           {% if loggedIn==False %}
           <td><button type="button" class='btn btn-primary book-resource' disabled>Please login to book!</button></td>
@@ -73,11 +75,13 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
             $(function() {
-              $('a#test').bind('click', function() {
-                $.getJSON('/background_process_test',
-                    function(data) {
-                      $("#myModal").modal();
-                });
+              $("#testing").bind('click', function() {
+                var resID = 
+                $(this).parents("tr").find(".classID").text(); 
+                var route = "/book_classes/"+ resID;
+                    $.post(route, function( data ) {
+                   return true
+                  });
                 return false;
               });
             });

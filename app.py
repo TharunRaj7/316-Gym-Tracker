@@ -286,6 +286,17 @@ def book_available_times(ResourceID="0"):
     return ret
 
 
+@app.route('/book_classes/<ResourceID>', methods=['POST'])
+def book_classes(ResourceID="0"):
+    # print("reached")
+    if request.method == "POST":
+        valuesDict = {'Email': session['email'],
+                      'ResourceID': ResourceID}
+        process_data.insert_into_enrollments(db, valuesDict)
+        previous_url = request.referrer
+        return redirect(previous_url)
+
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
