@@ -69,8 +69,6 @@ def insert_into_enrollments(db, valuesDict):
 
 
 # Make sure to wrap a string value with single quotes inside the double quotes
-
-
 def insert_to_db(db, table, schema, values):
     query = "insert into {} (".format(table)
     for item in schema:

@@ -4,8 +4,12 @@ content %}
 <div class="page-header" style="text-align:center;">
   <h1>{{ data[0] }}</h1>
 </div>
+<div class="md-form mt-0">
+  <input class="form-control" type="text" id = "mySearchInput" onkeyup="searchFunc()" placeholder="Search Resource Name" aria-label="Search">
+</div>
+<br>
 <div>
-  <table class="table table-bordered table-striped table-hover">
+  <table id = "dispTable" class="table table-bordered table-striped table-hover">
     <tr>
       <th>ResourceID</th>
       <th>ResourceName</th>
@@ -61,6 +65,31 @@ content %}
         $("#dispName").append(resName); 
       });
     });
+</script>
+
+<script> 
+function searchFunc() {
+  // Declare variables
+  var input, filter, table, tr, a, i, txtValue;
+  input = document.getElementById('mySearchInput');
+  filter = input.value.toUpperCase();
+  table = document.getElementById("dispTable");
+  tr = table.getElementsByTagName('tr');
+  //console.log(tr);
+
+  // Loop through all list items, and hide those who don't match the search query
+  for (i = 1; i < tr.length; i++) {
+    a = tr[i].cells[1];
+    //console.log(a);
+    txtValue = a.textContent || a.innerText;
+    //console.log(txtValue);
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      tr[i].style.display = "";
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+}
 </script>
  
     <div class="modal fade" id="myModal" role="dialog">

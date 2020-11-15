@@ -1,5 +1,4 @@
 def get_all_resources(db):
-
     query = 'select * from Resources'
     db.engine.execute(query)
     db_result = db.engine.execute(query)
@@ -13,6 +12,7 @@ def get_all_classes(db):
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
     return r
+    
 
 
 def get_filtered_classes(db, filter_on, filter_val):
