@@ -210,8 +210,7 @@ def signUpCompleted():
         password = request.form.get('password')
         confirmpass = request.form.get('confirm')
         if not process_data.validate_username(username):
-            #TODO: display error saying should be only letters. (HTML input regex?)
-            #We could potentially do this by adding the error text as a placeholder to the text input when we return the form again
+            # TODO: display error saying should be only letters. (HTML input regex?)
             print("Invalid user name. Should be only alphabetic...")
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
@@ -292,12 +291,12 @@ def book_available_times(ResourceID="0"):
     return ret
 
 
-@app.route('/book_classes/<ResourceID>', methods=['POST'])
-def book_classes(ResourceID="0"):
+@app.route('/book_classes/<ResourceID>/<ResourceDate>', methods=['POST'])
+def book_classes(ResourceID="0", ResourceDate="00:00:00"):
     # print("reached")
     if request.method == "POST":
-        valuesDict = {'Email': session['email'],
-                      'ResourceID': ResourceID}
+        valuesDict = {'UserID': str(session['uid']),
+                      'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
         process_data.insert_into_enrollments(db, valuesDict)
         previous_url = request.referrer
         return redirect(previous_url)
