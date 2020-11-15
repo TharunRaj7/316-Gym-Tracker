@@ -37,6 +37,7 @@ def insert_into_bookings(db, valuesDict):
     query = "insert into Bookings (UserID, DateBookedOn, TimeBookedAt, ResourceID, ResourceType) values ("
     query += valuesDict['UserID'] + ",'" + date + "','" + time + "'," + valuesDict['ResourceID'] + ",'" + valuesDict['ResourceType'] + "')"
     print(query)
+    db.engine.execute(query)
 
 #Make sure to wrap a string value with single quotes inside the double quotes
 def insert_to_db(db, table, schema, values):
