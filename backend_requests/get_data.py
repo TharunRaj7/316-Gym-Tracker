@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 def get_all_resources(db):
     query = 'select * from Resources'
     db.engine.execute(query)
@@ -14,7 +16,6 @@ def get_all_classes(db):
     return r
     
 
-
 def get_filtered_classes(db, filter_on, filter_val):
     """
     Takes in db engine, column to filter on, value to filter to
@@ -25,16 +26,31 @@ def get_filtered_classes(db, filter_on, filter_val):
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
+    for item in r:
+        item['ClassTime'] = (datetime.strptime("00:00:00", "%H:%M:%S") + item['ClassTime']).strftime("%I:%M %p")
     return r
 
+def get_user_bookings_for_profile(db, userID):
+    select = "B.ResourceID, R.ResourceName, B.ResourceType, R.Location, B.DateBookedOn, B.TimeBookedAt, B.BookingID"
+    table = "Bookings B, Resources R"
+    where = "R.ResourceID = B.ResourceID and B.UserID = {} order by B.DateBookedOn, B.TimeBookedAt".format(userID)
+    data = get_filtered_data(db, select, table, where)
+    for item in data:
+        item['DateBookedOn'] = item['DateBookedOn'].strftime("%Y-%m-%d")
+        time = datetime.strptime("00:00:00", "%H:%M:%S") + item["TimeBookedAt"]
+        item['TimeBookedAt'] = time.strftime("%I:%M %p")
+    return data
 
-def get_filtered_data(db, select, table, where):
-    query = "select {} from {} where {}".format(
-        select, table, where)
-    db.engine.execute(query)
-    db_result = db.engine.execute(query)
-    r = get_dict_from_result(db_result)
-    return r
+def get_user_enrollments_for_profile(db, userID):
+    select = "E.ClassID, C.ClassDay, C.ClassDate, C.ClassType, C.ClassTime, C.ClassLocation, C.EnrollmentCap"
+    table = "ClassSchedule C, Enrollments E"
+    where = "C.ClassID = E.ClassID and E.UserID = {} order by C.ClassDate, C.ClassTime".format(userID)
+    data = get_filtered_data(db, select, table, where)
+    for item in data:
+        item['ClassDate'] = item['ClassDate'].strftime("%Y-%m-%d")
+        time = datetime.strptime("00:00:00", "%H:%M:%S") + item["ClassTime"]
+        item['ClassTime'] = time.strftime("%I:%M %p")
+    return data
 
 
 def get_user_from_email(db, user_email):
@@ -63,6 +79,14 @@ def get_all_users(db):
     r = get_dict_from_result(db_result)
     return r
 
+#General Utility function to retrieve data from the database
+def get_filtered_data(db, select, table, where):
+    query = "select {} from {} where {}".format(
+        select, table, where)
+    db.engine.execute(query)
+    db_result = db.engine.execute(query)
+    r = get_dict_from_result(db_result)
+    return r
 
 def get_dict_from_result(db_result):
     """

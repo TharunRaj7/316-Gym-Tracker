@@ -4,7 +4,7 @@
 
 from flask import Flask, render_template, request, current_app, session, redirect
 from flask_sqlalchemy import SQLAlchemy
-from backend_requests import get_data, process_data
+from backend_requests import get_data, process_data, remove_data
 from flask.json import jsonify
 import logging
 from logging import Formatter, FileHandler
@@ -178,9 +178,18 @@ def profile():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    isUserAdmin = session['email'] == ADMIN_EMAIL
-    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=isUserAdmin)
 
+    user_record = get_data.get_user_from_email(db, session['email'])
+    if user_record is None:
+        # TODO: This means didn't find any users with the email used to log in.
+        # This test case should never be achieved in theory since we are checking against none users in the login
+        return render_template('errors/404.html')
+        
+    isUserAdmin = session['email'] == ADMIN_EMAIL
+    user_reservations = get_data.get_user_bookings_for_profile(db, session['uid'])
+    user_enrollments = get_data.get_user_enrollments_for_profile(db, session['uid'])
+    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=isUserAdmin,
+        reservations = user_reservations, enrollments = user_enrollments)
 
 @app.route('/login')
 def login():
@@ -292,6 +301,12 @@ def book_available_times(ResourceID="0"):
     # print(ret)
     return ret
 
+@app.route('/remove_reservation/<itemType>/<itemID>', methods = ['POST'])
+def remove_reservation(itemType, itemID):
+    remove_data.remove_reservation(db, itemType, itemID, session['uid'])
+    previous_url = request.referrer
+    #print(previous_url)
+    return redirect(previous_url)
 
 @app.route('/book_classes/<ResourceID>/<ResourceDate>', methods=['POST'])
 def book_classes(ResourceID="0", ResourceDate="00:00:00"):
@@ -301,6 +316,7 @@ def book_classes(ResourceID="0", ResourceDate="00:00:00"):
                       'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
         process_data.insert_into_enrollments(db, valuesDict)
         previous_url = request.referrer
+        print(previous_url)
         return redirect(previous_url)
 
 
