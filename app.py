@@ -7,12 +7,19 @@ from flask import Flask, render_template, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
 from flask.json import jsonify
 from backend_requests import get_data
+#from data import X
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
 from data.insert_resources import insertRes
 import pyrebase
+import random
+from faker import Faker 
+from collections import defaultdict
+from sqlalchemy import create_engine
+import pandas as pd
+
 current_user = {}
 #----------------------------------------------------------------------------#
 # App Config.
@@ -254,11 +261,11 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
-    app.run()
+    app.run() 
 
 # Or specify port manually:
 '''
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+#if __name__ == '__main__':
+ #   port = int(os.environ.get('PORT', 5000))
+  #  app.run(host='0.0.0.0', port=port)
 '''
