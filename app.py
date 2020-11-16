@@ -4,7 +4,7 @@
 
 from flask import Flask, render_template, request, current_app, session, redirect
 from flask_sqlalchemy import SQLAlchemy
-from backend_requests import get_data, process_data
+from backend_requests import get_data, process_data, remove_data
 from flask.json import jsonify
 import logging
 from logging import Formatter, FileHandler
@@ -297,11 +297,7 @@ def book_available_times(ResourceID="0"):
 
 @app.route('/remove_reservation/<itemType>/<itemID>', methods = ['POST'])
 def remove_reservation(itemType, itemID):
-    if itemType == "Equip":
-        print("equip")
-    elif itemType == "Class":
-        print("class")
-
+    remove_data.remove_reservation(db, itemType, itemID, session['uid'])
     previous_url = request.referrer
     #print(previous_url)
     return redirect(previous_url)
@@ -314,7 +310,7 @@ def book_classes(ResourceID="0", ResourceDate="00:00:00"):
                       'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
         process_data.insert_into_enrollments(db, valuesDict)
         previous_url = request.referrer
-        #print(previous_url)
+        print(previous_url)
         return redirect(previous_url)
 
 

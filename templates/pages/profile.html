@@ -44,14 +44,14 @@ content %}
   </tr>
   {% for row in enrollments%}
   <tr>
-    <td class="classID">{{row['ClassID']}}</td>
+    <td class="itemID">{{row['ClassID']}}</td>
     <td>{{row['ClassType']}}</td>
     <td class="classDate">{{row['ClassDate']}}</td>
     <td>{{row['ClassDay']}}</td>
     <td>{{row['ClassTime']}}</td>
     <td>{{row['ClassLocation']}}</td>
     <td>{{row['EnrollmentCap']}}</td>
-    <td><button class="btn btn-primary">Remove Enrollment</button></a></td>
+    <td><button class="btn btn-primary remove-button" value = "Class">Remove Enrollment</button></a></td>
   </tr>
   {% endfor %}
 </table><br>
@@ -67,7 +67,7 @@ content %}
                 var parameters=type+"/"+ itemID;
                 var route = "/remove_reservation/" + parameters;
                     $.post(route, function(data) {
-                    alert("removed");
+                    alert("removed, please refresh page");
                    return true;
                   });
                 return false;
