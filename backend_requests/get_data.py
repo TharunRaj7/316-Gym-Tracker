@@ -26,6 +26,8 @@ def get_filtered_classes(db, filter_on, filter_val):
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
+    for item in r:
+        item['ClassTime'] = (datetime.strptime("00:00:00", "%H:%M:%S") + item['ClassTime']).strftime("%I:%M %p")
     return r
 
 def get_user_bookings_for_profile(db, userID):

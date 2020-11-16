@@ -12,6 +12,7 @@ from forms import *
 import os
 from data.insert_resources import insertRes
 import pyrebase
+ADMIN_EMAIL = "admin@gymtracker.com"
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -81,7 +82,8 @@ def logout():
     usr = session.pop('usr', None)
     user_email = session.pop('email', None)
     session.pop('uid', None)
-    print("Logging user {} out...".format(user_email))
+    user_name = session.pop('name', None)
+    print("Logging user {}, {} out...".format(user_name, user_email))
     return render_template('pages/placeholder.home.html')
 
 
@@ -164,12 +166,6 @@ def brodieClass():
 
 @app.route('/about')
 def about():
-    # query  = 'insert into User values (3, %s )' % "'superman'"
-    # db.engine.execute(query)
-    # r = db.engine.execute('select * from User')
-    # s = ""
-    # for i in r:
-    #     s += i['name'] # This works if we wanna use a dict format, and tuples also work.
     return render_template('pages/placeholder.about.html')
 
 
@@ -182,18 +178,18 @@ def profile():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
+
     user_record = get_data.get_user_from_email(db, session['email'])
     if user_record is None:
         # TODO: This means didn't find any users with the email used to log in.
         # This test case should never be achieved in theory since we are checking against none users in the login
         return render_template('errors/404.html')
-    
+        
+    isUserAdmin = session['email'] == ADMIN_EMAIL
     user_reservations = get_data.get_user_bookings_for_profile(db, session['uid'])
     user_enrollments = get_data.get_user_enrollments_for_profile(db, session['uid'])
-    #print(user_reservations, user_enrollments)
-    return render_template('pages/profile.html', userEmail=user_record['Email'], userDisplayName=user_record['Name'], 
+    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=isUserAdmin,
         reservations = user_reservations, enrollments = user_enrollments)
-
 
 @app.route('/login')
 def login():
@@ -233,7 +229,12 @@ def signUpCompleted():
             user_email = user['email'] if user is not None else None
             session['email'] = user_email
             user_record = get_data.get_user_from_email(db, user_email)
+            if user_record is None:
+                # NOTE: This means didn't find any users with the email used to log in.
+                # Render 404?
+                return render_template('errors/404.html')
             session['uid'] = user_record['ID']
+            session['name'] = user_record['Name']
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -251,7 +252,12 @@ def signInCompleted():
             user_email = user['email'] if user is not None else None
             session['email'] = user_email
             user_record = get_data.get_user_from_email(db, user_email)
+            if user_record is None:
+                # NOTE: This means didn't find any users with the email used to log in.
+                # Render 404?
+                return render_template('errors/404.html')
             session['uid'] = user_record['ID']
+            session['name'] = user_record['Name']
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)

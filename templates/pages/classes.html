@@ -90,10 +90,9 @@
                 var parameters=resID+"/"+resDate
                 var route = "/book_classes/"+ parameters
                     $.post(route, function(data) {
-                    //alert("booked");
-                   return true
+                    alert("Enrollment Successful");
+                    location.reload()
                   });
-                return false;
               });
             });
           });

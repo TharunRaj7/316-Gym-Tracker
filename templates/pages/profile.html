@@ -4,7 +4,11 @@ content %}
 <h1>Profile</h1>
 <img src="https://i.ibb.co/JQ8FJwc/Screen-Shot-2020-11-14-at-17-59-03.png" style="max-width: 100px; float:right; padding-bottom: 30px;"></img><br>
 <p>{{userEmail}}</p>
-<p>{{userDisplayName}}</p><br>
+<p>{{userDisplayName}}</p>
+{% if isAdmin==True %}
+<p style="color:red">Admin</p>
+{% endif %}
+
 <p><h2 style = 'text-align: center;'>Your Equipment Reservations</h2></p><br>
 <table class="table table-bordered table-striped table-hover">
   <tr>
@@ -66,11 +70,11 @@ content %}
                 var type = this.value;
                 var parameters=type+"/"+ itemID;
                 var route = "/remove_reservation/" + parameters;
+                //alert("removed, please refresh page");
                     $.post(route, function(data) {
-                    alert("removed, please refresh page");
-                   return true;
+                      alert("Successfully Removed Item");
+                      location.reload();
                   });
-                return false;
               });
             });
           });
