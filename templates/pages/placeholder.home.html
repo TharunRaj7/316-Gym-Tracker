@@ -1,27 +1,29 @@
 {% extends 'layouts/main.html' %} {% block title %}Home{% endblock %} {% block
 content %}
 <div class="container">
-  <div class="page-header jumbotron">
-    <h1>Workout with GymTracker!</h1>
+  <div class="page-header jumbotron" style="max-width: fit-content; margin:auto;">
+    <h1 style="text-align: center;">GymTracker</h1>
+    <h2 style="text-align: center;">Your New Favourite Workout Partner</h2>
   </div>
-  <p class="lead">
+  <div>
+  <p class="lead" style=" font-size:18px; padding-left:250px; padding-right:250px; padding-top: 30px;text-align:center;">
     In collaboration with Duke Recreation, we are dedicated maintaining your recreational needs while also keeping you safe and healthy. Find equipments, build schedules and explore classes with our simple and efficient platform. 
-
+  </div>
 <div class="row" style="display:flex; justify-content: center;">
   <div class="col-sm-3">
     <div class="card">
       <div class="card-body">
-        <img class="card-img-top" src="https://i.ibb.co/4ZxsrBC/35756582-treadmills-in-a-gym.jpg" alt="Card image cap">
-        <a href="/gym" class="btn btn-info" style="min-width:12.5vw">Find Equipments</a>
-      </div>
+        <img class="card-img-top" src="https://i.ibb.co/7rxDmX6/Cycling.gif" alt="Card image cap">
+        <a href="/gym" class="btn btn-default" style="min-width:180px;">Find Equipments</a>
+      </div> 
     </div>
   </div>
   
   <div class="col-sm-3">
     <div class="card">
       <div class="card-body">
-        <img class="card-img-top" src="https://i.ibb.co/LPdPDnJ/Muscle-pump-2.jpg" alt="Card image cap"/>        
-        <a href="/Classes" class="btn btn-default" style="min-width:12.5vw">Find Gym Classes</a>
+        <img class="card-img-top" src="https://i.ibb.co/tZRbTss/Jumping-Jacks-2.gif" alt="Card image cap"/>        
+        <a href="/Classes" class="btn btn-default" style="min-width: 180px;">Find Gym Classes</a>
       </div>
     </div>
   </div>

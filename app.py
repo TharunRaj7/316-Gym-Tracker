@@ -1,10 +1,10 @@
-
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, current_app, session
+from flask import Flask, render_template, request, current_app, session, redirect
 from flask_sqlalchemy import SQLAlchemy
+from backend_requests import get_data, process_data
 from flask.json import jsonify
 from backend_requests import get_data
 #from data import X
@@ -21,6 +21,8 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 current_user = {}
+ADMIN_EMAIL = "admin@gymtracker.com"
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -68,40 +70,15 @@ def home():
 def bothGym():
     if 'usr' not in session:
         print("\nNot logged in...")
-        userLog = False
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-        userLog = True
-    all_resources = get_data.get_all_resources(db)
-    return render_template('pages/gym.html', data=all_resources, loggedIn=userLog)
-
-
-@app.route('/Classes')
-def bothClasses():
-    if 'usr' not in session:
-        print("\nNot logged in...")
-        userLog = False
-    else:
-        print("\nUser is logged in...")
-        print("Email:", session['email'])
-        userLog = True
-    all_classes = get_data.get_all_classes(db)
-    return render_template('pages/Classes.html', data=all_classes, loggedIn=userLog)
-
-
-@app.route('/wilsonClasses')
-def wilsonClass():
-    if 'usr' not in session:
-        print("\nNot logged in...")
-        userLog = False
-    else:
-        print("\nUser is logged in...")
-        print("Email:", session['email'])
-        userLog = True
-    wilson_classes = get_data.get_fitlered_classes(
-        db, filter_on='ClassLocation', filter_val='Kville')
-    return render_template('pages/wilsonClasses.html', data=wilson_classes, loggedIn=userLog)
+        userLoggedIn = True
+    all_resources = []
+    all_resources.append("Equipment Information")
+    all_resources.append(get_data.get_all_resources(db))
+    return render_template('pages/gym.html', data=all_resources, loggedIn=userLoggedIn)
 
 
 @app.route('/brodie')
@@ -109,18 +86,29 @@ def brodie():
     return render_template('pages/brodie.html')
 
 
+@app.route('/logout')
+def logout():
+    usr = session.pop('usr', None)
+    user_email = session.pop('email', None)
+    session.pop('uid', None)
+    user_name = session.pop('name', None)
+    print("Logging user {}, {} out...".format(user_name, user_email))
+    return render_template('pages/placeholder.home.html')
+
+
 @app.route('/brodieEquipment')
 def brodieGym():
     if 'usr' not in session:
-        print("\nNot logged in...")
-        userLog = False
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-        userLog = True
-    brodie_resources = get_data.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Brodie')
-    return render_template('pages/brodieEquipment.html', data=brodie_resources, loggedIn=userLog)
+        userLoggedIn = True
+    brodie_resources = []
+    brodie_resources.append("Brodie Equipment")
+    brodie_resources.append(get_data.get_filtered_data(
+        db, "*", table="Resources", where="Location = 'Brodie'"))
+    return render_template('pages/gym.html', data=brodie_resources, loggedIn=userLoggedIn)
 
 
 @app.route('/wilson')
@@ -132,24 +120,61 @@ def wilson():
 def wilsonGym():
     if 'usr' not in session:
         print("\nNot logged in...")
-        userLog = False
+        userLoggedIn = False
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-        userLog = True
-    wilson_resources = get_data.get_fitlered_resources(
-        db, filter_on='Location', filter_val='Wilson')
-    return render_template('pages/wilsonEquipment.html', data=wilson_resources, loggedIn=userLog)
+        userLoggedIn = True
+    wilson_resources = []
+    wilson_resources.append("Wilson Equipment")
+    wilson_resources.append(get_data.get_filtered_data(
+        db, "*", table="Resources", where="Location = 'Wilson'"))
+    return render_template('pages/gym.html', data=wilson_resources, loggedIn=userLoggedIn)
+
+
+@app.route('/Classes')
+def bothClasses():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+        userLoggedIn = False
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+        userLoggedIn = True
+    all_classes = get_data.get_all_classes(db)
+    return render_template('pages/classes.html', header="All Classes", data=all_classes, loggedIn=userLoggedIn)
+
+
+@app.route('/wilsonClasses')
+def wilsonClass():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+        userLoggedIn = False
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+        userLoggedIn = True
+    wilson_classes = get_data.get_filtered_classes(
+        db, filter_on='ClassLocation', filter_val='Kville')
+    return render_template('pages/classes.html', header="Wilson Classes", data=wilson_classes, loggedIn=userLoggedIn)
+
+
+@app.route('/brodieClasses')
+def brodieClass():
+    if 'usr' not in session:
+        print("\nNot logged in...")
+        userLoggedIn = False
+    else:
+        print("\nUser is logged in...")
+        print("Email:", session['email'])
+        userLoggedIn = True
+    wilson_classes = get_data.get_filtered_classes(
+        db, filter_on='ClassLocation', filter_val='Brodie')
+    return render_template('pages/classes.html', header="Brodie Classes", data=wilson_classes, loggedIn=userLoggedIn)
 
 
 @app.route('/about')
 def about():
-    # query  = 'insert into User values (3, %s )' % "'superman'"
-    # db.engine.execute(query)
-    # r = db.engine.execute('select * from User')
-    # s = ""
-    # for i in r:
-    #     s += i['name'] # This works if we wanna use a dict format, and tuples also work.
     return render_template('pages/placeholder.about.html')
 
 
@@ -162,7 +187,8 @@ def profile():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    return render_template('pages/profile.html', userEmail=current_user['user']['email'], userDisplayName=current_user['user']['displayName'])
+    isUserAdmin = session['email'] == ADMIN_EMAIL
+    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=isUserAdmin)
 
 
 @app.route('/login')
@@ -180,20 +206,35 @@ def register():
 @app.route('/register', methods=["GET", "POST"])
 def signUpCompleted():
     if request.method == "POST":
+        username = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
         confirmpass = request.form.get('confirm')
+        if not process_data.validate_username(username):
+            # TODO: display error saying should be only letters. (HTML input regex?)
+            print("Invalid user name. Should be only alphabetic...")
+            form = RegisterForm(request.form)
+            return render_template('forms/register.html', form=form)
         if password != confirmpass:
+            # TODO: display error saying passwords don't match?
             form = RegisterForm(request.form)
             return render_template('forms/register.html', form=form)
         user = auth.create_user_with_email_and_password(email, password)
-        # TODO: for protecting routes
-        user_id = user['idToken']
-        session['usr'] = user_id
-        user_email = user['email'] if user is not None else None
-        session['email'] = user_email
-        # print(session)
-        current_user['user'] = user
+        process_data.insert_into_users(db, username, email)
+        if user is not None:
+            # NOTE: if you add more stuff to session during login,
+            # then also edit logout to remove that stuff
+            user_id = user['idToken']
+            session['usr'] = user_id
+            user_email = user['email'] if user is not None else None
+            session['email'] = user_email
+            user_record = get_data.get_user_from_email(db, user_email)
+            if user_record is None:
+                # NOTE: This means didn't find any users with the email used to log in.
+                # Render 404?
+                return render_template('errors/404.html')
+            session['uid'] = user_record['ID']
+            session['name'] = user_record['Name']
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -203,16 +244,20 @@ def signInCompleted():
         email = request.form.get('name')
         password = request.form.get('password')
         user = auth.sign_in_with_email_and_password(email, password)
-        # TODO: for protecting routes
-        user_id = user['idToken'] if user is not None else None
-        user_email = user['email'] if user is not None else None
-        session['usr'] = user_id
-        session['email'] = user_email
-        # print(session)
-        current_user['user'] = user
-        jsonify(current_user['user'])
-        # user = auth.refresh(user['refreshToken'])
-        # print(user)
+        if user is not None:
+            # NOTE: if you add more stuff to session during login,
+            # then also edit logout to remove that stuff
+            user_id = user['idToken']
+            session['usr'] = user_id
+            user_email = user['email'] if user is not None else None
+            session['email'] = user_email
+            user_record = get_data.get_user_from_email(db, user_email)
+            if user_record is None:
+                # NOTE: This means didn't find any users with the email used to log in.
+                # Render 404?
+                return render_template('errors/404.html')
+            session['uid'] = user_record['ID']
+            session['name'] = user_record['Name']
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
@@ -233,10 +278,39 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 
-@app.route('/background_process_test')
-def background_process_test():
-    print("Hello")
-    return {"date1": True, "Date 2": False, "Date3": False}
+@app.route('/book_available_times/<ResourceID>', methods=['GET', 'POST'])
+def book_available_times(ResourceID="0"):
+    # print("reached")
+    if request.method == "POST":
+        dateTime = request.form.get('time').split(",")
+        date, time = dateTime[0], dateTime[1]
+        # print(time)
+        resType = request.form.get('resType')
+        valuesDict = {'UserID': str(session['uid']), 'DateBookedOn': date, 'TimeBookedAt': time,
+                      'ResourceID': ResourceID, 'ResourceType': resType}
+        process_data.insert_into_bookings(db, valuesDict)
+        previous_url = request.referrer
+        return redirect(previous_url)
+
+    # for GET requests
+    where = "ResourceID = {}".format(ResourceID)
+    datesBooked = get_data.get_filtered_data(
+        db, "DateBookedOn, TimeBookedAt", "Bookings", where)
+    ret = process_data.get_available_datetimes(
+        datesBooked, "08:00:00", "22:00:00")
+    # print(ret)
+    return ret
+
+
+@app.route('/book_classes/<ResourceID>/<ResourceDate>', methods=['POST'])
+def book_classes(ResourceID="0", ResourceDate="00:00:00"):
+    # print("reached")
+    if request.method == "POST":
+        valuesDict = {'UserID': str(session['uid']),
+                      'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
+        process_data.insert_into_enrollments(db, valuesDict)
+        previous_url = request.referrer
+        return redirect(previous_url)
 
 
 @app.errorhandler(404)
