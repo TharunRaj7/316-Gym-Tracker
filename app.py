@@ -185,9 +185,14 @@ def profile():
     user_record = get_data.get_user_from_email(db, session['email'])
     if user_record is None:
         # TODO: This means didn't find any users with the email used to log in.
-        # Render 404?
+        # This test case should never be achieved in theory since we are checking against none users in the login
         return render_template('errors/404.html')
-    return render_template('pages/profile.html', userEmail=user_record['Email'], userDisplayName=user_record['Name'])
+    
+    user_reservations = get_data.get_user_bookings_for_profile(db, session['uid'])
+    user_enrollments = get_data.get_user_enrollments_for_profile(db, session['uid'])
+    #print(user_reservations, user_enrollments)
+    return render_template('pages/profile.html', userEmail=user_record['Email'], userDisplayName=user_record['Name'], 
+        reservations = user_reservations, enrollments = user_enrollments)
 
 
 @app.route('/login')
@@ -290,6 +295,16 @@ def book_available_times(ResourceID="0"):
     # print(ret)
     return ret
 
+@app.route('/remove_reservation/<itemType>/<itemID>', methods = ['POST'])
+def remove_reservation(itemType, itemID):
+    if itemType == "Equip":
+        print("equip")
+    elif itemType == "Class":
+        print("class")
+
+    previous_url = request.referrer
+    #print(previous_url)
+    return redirect(previous_url)
 
 @app.route('/book_classes/<ResourceID>/<ResourceDate>', methods=['POST'])
 def book_classes(ResourceID="0", ResourceDate="00:00:00"):
@@ -299,6 +314,7 @@ def book_classes(ResourceID="0", ResourceDate="00:00:00"):
                       'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
         process_data.insert_into_enrollments(db, valuesDict)
         previous_url = request.referrer
+        #print(previous_url)
         return redirect(previous_url)
 
 
