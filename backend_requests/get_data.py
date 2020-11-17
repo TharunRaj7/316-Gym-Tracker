@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 def get_all_resources(db):
-    query = 'select * from Resources'
+    query = 'select * from Resources where ResourceDisplay = 1'
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
@@ -9,7 +9,7 @@ def get_all_resources(db):
 
 
 def get_all_classes(db):
-    query = 'select * from ClassSchedule where EnrollmentCap > 0'
+    query = 'select * from ClassSchedule where EnrollmentCap > 0 AND ClassDisplay = 1'
     db.engine.execute(query)
     db_result = db.engine.execute(query)
     r = get_dict_from_result(db_result)
@@ -21,7 +21,7 @@ def get_filtered_classes(db, filter_on, filter_val):
     Takes in db engine, column to filter on, value to filter to
     (select * from resources where filter_on = 'filter_val')
     """
-    query = "select * from ClassSchedule where {} = {} AND EnrollmentCap > 0".format(
+    query = "select * from ClassSchedule where {} = {} AND EnrollmentCap > 0 AND ClassDisplay = 1".format(
         filter_on, "'" + filter_val + "'")
     db.engine.execute(query)
     db_result = db.engine.execute(query)
