@@ -6,7 +6,6 @@ from flask import Flask, render_template, request, current_app, session, redirec
 from flask_sqlalchemy import SQLAlchemy
 from backend_requests import get_data, process_data, remove_data
 from flask.json import jsonify
-from backend_requests import get_data
 #from data import X
 import logging
 from logging import Formatter, FileHandler
@@ -15,7 +14,6 @@ import os
 from data.insert_resources import insertRes
 import pyrebase
 import random
-from faker import Faker 
 from collections import defaultdict
 from sqlalchemy import create_engine
 import pandas as pd
@@ -189,10 +187,13 @@ def profile():
         print("\nUser is logged in...")
         print("Email:", session['email'])
 
-    user_reservations = get_data.get_user_bookings_for_profile(db, session['uid'])
-    user_enrollments = get_data.get_user_enrollments_for_profile(db, session['uid'])
+    user_reservations = get_data.get_user_bookings_for_profile(
+        db, session['uid'])
+    user_enrollments = get_data.get_user_enrollments_for_profile(
+        db, session['uid'])
     return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=session['isAdmin'],
-        reservations = user_reservations, enrollments = user_enrollments)
+                           reservations=user_reservations, enrollments=user_enrollments)
+
 
 @app.route('/login')
 def login():
@@ -310,12 +311,14 @@ def book_available_times(ResourceID="0"):
     # print(ret)
     return ret
 
-@app.route('/remove_reservation/<itemType>/<itemID>', methods = ['POST'])
+
+@app.route('/remove_reservation/<itemType>/<itemID>', methods=['POST'])
 def remove_reservation(itemType, itemID):
     remove_data.remove_reservation(db, itemType, itemID, session['uid'])
     previous_url = request.referrer
-    #print(previous_url)
+    # print(previous_url)
     return redirect(previous_url)
+
 
 @app.route('/book_classes/<ResourceID>/<ResourceDate>', methods=['POST'])
 def book_classes(ResourceID="0", ResourceDate="00:00:00"):
@@ -351,7 +354,7 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
-    app.run() 
+    app.run()
 
 # Or specify port manually:
 '''
