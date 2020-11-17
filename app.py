@@ -83,6 +83,7 @@ def logout():
     user_email = session.pop('email', None)
     session.pop('uid', None)
     user_name = session.pop('name', None)
+    session.pop('isAdmin', None)
     print("Logging user {}, {} out...".format(user_name, user_email))
     return render_template('pages/placeholder.home.html')
 
@@ -179,16 +180,9 @@ def profile():
         print("\nUser is logged in...")
         print("Email:", session['email'])
 
-    user_record = get_data.get_user_from_email(db, session['email'])
-    if user_record is None:
-        # TODO: This means didn't find any users with the email used to log in.
-        # This test case should never be achieved in theory since we are checking against none users in the login
-        return render_template('errors/404.html')
-        
-    isUserAdmin = session['email'] == ADMIN_EMAIL
     user_reservations = get_data.get_user_bookings_for_profile(db, session['uid'])
     user_enrollments = get_data.get_user_enrollments_for_profile(db, session['uid'])
-    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=isUserAdmin,
+    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=session['isAdmin'],
         reservations = user_reservations, enrollments = user_enrollments)
 
 @app.route('/login')
@@ -200,7 +194,7 @@ def login():
 @app.route('/register')
 def register():
     form = RegisterForm(request.form)
-    return render_template('forms/register.html', form=form)
+    return render_template('forms/register.html', form=form, form_error=False)
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -214,11 +208,15 @@ def signUpCompleted():
             # TODO: display error saying should be only letters. (HTML input regex?)
             print("Invalid user name. Should be only alphabetic...")
             form = RegisterForm(request.form)
-            return render_template('forms/register.html', form=form)
+            return render_template('forms/register.html', form=form, form_error=True)
         if password != confirmpass:
             # TODO: display error saying passwords don't match?
             form = RegisterForm(request.form)
-            return render_template('forms/register.html', form=form)
+            return render_template('forms/register.html', form=form, form_error=True)
+        if ' ' in email or ';' in email:
+            # TODO: display error saying passwords don't match?
+            form = RegisterForm(request.form)
+            return render_template('forms/register.html', form=form, form_error=True)
         user = auth.create_user_with_email_and_password(email, password)
         process_data.insert_into_users(db, username, email)
         if user is not None:
@@ -235,6 +233,7 @@ def signUpCompleted():
                 return render_template('errors/404.html')
             session['uid'] = user_record['ID']
             session['name'] = user_record['Name']
+            session['isAdmin'] = session['email'] == ADMIN_EMAIL
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -258,6 +257,7 @@ def signInCompleted():
                 return render_template('errors/404.html')
             session['uid'] = user_record['ID']
             session['name'] = user_record['Name']
+            session['isAdmin'] = session['email'] == ADMIN_EMAIL
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
