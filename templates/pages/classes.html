@@ -4,13 +4,17 @@
     <div class="page-header" style="text-align:center;">
     <h1>{{ header }}</h1>
     </div>
+    <div class="md-form mt-0">
+      <input class="form-control" type="text" id = "mySearchInput" onkeyup="searchFunc()" placeholder="Search Class Name" aria-label="Search">
+    </div>
+    <br>
     <div>
-      <table class="table table-bordered table-striped table-hover">
+      <table class="table table-bordered table-striped table-hover" id = "dispTable">
         <tr>
           <th>Class ID </th> 
           <th>Day</th>
           <th>Date </th> 
-          <th>Class Type</th>
+          <th>Class Name</th>
           <th>Time</th>
           <th>Location</th>
           <th>EnrollmentCap</th>
@@ -26,10 +30,10 @@
           <td>{{row['ClassLocation']}}</td>
           <td>{{row['EnrollmentCap']}}</td>
           {% if loggedIn==True %}
-          <td><a href=# id='testing'><button class='btn btn-primary'>Reserve Now!</button></a></td>
+          <td><a><button class='btn btn-primary book-class'>Reserve Now!</button></a></td>
           {% endif %}
           {% if loggedIn==False %}
-          <td><button type="button" class='btn btn-primary book-resource' disabled>Please login to book!</button></td>
+          <td><button type="button" class='btn btn-primary' disabled>Please login to book!</button></td>
           {% endif %}
         </tr>
         {% endfor %}
@@ -76,21 +80,48 @@
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
+       $(document).ready(function() {
             $(function() {
-              $("#testing").bind('click', function() {
+              $(".book-class").bind('click', function() {
                 var resID = 
                 $(this).parents("tr").find(".classID").text(); 
                 var resDate = 
                 $(this).parents("tr").find(".classDate").text(); 
                 var parameters=resID+"/"+resDate
                 var route = "/book_classes/"+ parameters
-                    $.post(route, function( data ) {
-                   return true
+                    $.post(route, function(data) {
+                    alert("Enrollment Successful");
+                    location.reload()
                   });
-                return false;
               });
             });
+          });
     </script>
+
+<script> 
+  function searchFunc() {
+    // Declare variables
+    var input, filter, table, tr, a, i, txtValue;
+    input = document.getElementById('mySearchInput');
+    filter = input.value.toUpperCase();
+    table = document.getElementById("dispTable");
+    tr = table.getElementsByTagName('tr');
+    //console.log(tr);
+  
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 1; i < tr.length; i++) {
+      a = tr[i].cells[3];
+      //console.log(a);
+      txtValue = a.textContent || a.innerText;
+      //console.log(txtValue);
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+  </script>
 
     {% endblock %}
 

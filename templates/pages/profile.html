@@ -1,32 +1,82 @@
-{% extends 'layouts/main.html' %} {% block title %}About{% endblock %} {% block
+{% extends 'layouts/main.html' %} {% block title %}Profile{% endblock %} {% block
 content %}
 
 <h1>Profile</h1>
-<img src="https://i.ibb.co/JQ8FJwc/Screen-Shot-2020-11-14-at-17-59-03.png" style="max-width: 100px; float:right; padding-bottom: 30px;"></img>
+<img src="https://i.ibb.co/JQ8FJwc/Screen-Shot-2020-11-14-at-17-59-03.png" style="max-width: 100px; float:right; padding-bottom: 30px;"></img><br>
 <p>{{userEmail}}</p>
 <p>{{userDisplayName}}</p>
 {% if isAdmin==True %}
 <p style="color:red">Admin</p>
 {% endif %}
+
+<p><h2 style = 'text-align: center;'>Your Equipment Reservations</h2></p><br>
 <table class="table table-bordered table-striped table-hover">
   <tr>
     <th>ResourceID</th>
     <th>ResourceName</th>
     <th>ResourceType</th>
+    <th>Date</th>
+    <th>Time</th>
     <th>Location</th>
+    <th>Booking</th>
   </tr>
-  {% for row in data%}
+  {% for row in reservations%}
   <tr>
+    <td hidden = 'true' class = "itemID">{{row['BookingID']}}
     <td>{{row['ResourceID']}}</td>
     <td>{{row['ResourceName']}}</td>
     <td>{{row['ResourceType']}}</td>
+    <td>{{row['DateBookedOn']}}</td>
+    <td>{{row['TimeBookedAt']}}</td>
     <td>{{row['Location']}}</td>
-    <td>
-      <a href="#" id="test"
-        ><button class="btn btn-primary">Book Now!</button></a
-      >
-    </td>
+    <td><button class="btn btn-primary remove-button" value = 'Equip'>Remove Reservation</button></td>
   </tr>
   {% endfor %}
 </table>
-{{userInfo}} {% endblock %}
+<br>
+<p><h2 style = 'text-align: center;'>Your Class Enrollments</h2></p><br>
+<table class="table table-bordered table-striped table-hover">
+  <tr>
+    <th>Class ID </th> 
+    <th>Class Name</th>
+    <th>Date </th> 
+    <th>Day</th>
+    <th>Time</th>
+    <th>Location</th>
+    <th>EnrollmentCap</th>
+    <th>Booking</th>
+  </tr>
+  {% for row in enrollments%}
+  <tr>
+    <td class="itemID">{{row['ClassID']}}</td>
+    <td>{{row['ClassType']}}</td>
+    <td class="classDate">{{row['ClassDate']}}</td>
+    <td>{{row['ClassDay']}}</td>
+    <td>{{row['ClassTime']}}</td>
+    <td>{{row['ClassLocation']}}</td>
+    <td>{{row['EnrollmentCap']}}</td>
+    <td><button class="btn btn-primary remove-button" value = "Class">Remove Enrollment</button></a></td>
+  </tr>
+  {% endfor %}
+</table><br>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+            $(document).ready(function() {
+            $(function() {
+              $(".remove-button").bind('click', function() {
+                var itemID = 
+                $(this).parents("tr").find(".itemID").text(); 
+                var type = this.value;
+                var parameters=type+"/"+ itemID;
+                var route = "/remove_reservation/" + parameters;
+                //alert("removed, please refresh page");
+                    $.post(route, function(data) {
+                      alert("Successfully Removed Item");
+                      location.reload();
+                  });
+              });
+            });
+          });
+    </script>
+{% endblock %}

@@ -4,7 +4,7 @@
 
 from flask import Flask, render_template, request, current_app, session, redirect
 from flask_sqlalchemy import SQLAlchemy
-from backend_requests import get_data, process_data
+from backend_requests import get_data, process_data, remove_data
 from flask.json import jsonify
 from backend_requests import get_data
 #from data import X
@@ -92,6 +92,7 @@ def logout():
     user_email = session.pop('email', None)
     session.pop('uid', None)
     user_name = session.pop('name', None)
+    session.pop('isAdmin', None)
     print("Logging user {}, {} out...".format(user_name, user_email))
     return render_template('pages/placeholder.home.html')
 
@@ -187,9 +188,11 @@ def profile():
     else:
         print("\nUser is logged in...")
         print("Email:", session['email'])
-    isUserAdmin = session['email'] == ADMIN_EMAIL
-    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=isUserAdmin)
 
+    user_reservations = get_data.get_user_bookings_for_profile(db, session['uid'])
+    user_enrollments = get_data.get_user_enrollments_for_profile(db, session['uid'])
+    return render_template('pages/profile.html', userEmail=session['email'], userDisplayName=session['name'], isAdmin=session['isAdmin'],
+        reservations = user_reservations, enrollments = user_enrollments)
 
 @app.route('/login')
 def login():
@@ -200,7 +203,7 @@ def login():
 @app.route('/register')
 def register():
     form = RegisterForm(request.form)
-    return render_template('forms/register.html', form=form)
+    return render_template('forms/register.html', form=form, form_error=False)
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -214,11 +217,15 @@ def signUpCompleted():
             # TODO: display error saying should be only letters. (HTML input regex?)
             print("Invalid user name. Should be only alphabetic...")
             form = RegisterForm(request.form)
-            return render_template('forms/register.html', form=form)
+            return render_template('forms/register.html', form=form, form_error=True)
         if password != confirmpass:
             # TODO: display error saying passwords don't match?
             form = RegisterForm(request.form)
-            return render_template('forms/register.html', form=form)
+            return render_template('forms/register.html', form=form, form_error=True)
+        if ' ' in email or ';' in email:
+            # TODO: display error saying passwords don't match?
+            form = RegisterForm(request.form)
+            return render_template('forms/register.html', form=form, form_error=True)
         user = auth.create_user_with_email_and_password(email, password)
         process_data.insert_into_users(db, username, email)
         if user is not None:
@@ -235,6 +242,7 @@ def signUpCompleted():
                 return render_template('errors/404.html')
             session['uid'] = user_record['ID']
             session['name'] = user_record['Name']
+            session['isAdmin'] = session['email'] == ADMIN_EMAIL
     return render_template('pages/placeholder.home.html', userInfo=user['idToken'])
 
 
@@ -258,6 +266,7 @@ def signInCompleted():
                 return render_template('errors/404.html')
             session['uid'] = user_record['ID']
             session['name'] = user_record['Name']
+            session['isAdmin'] = session['email'] == ADMIN_EMAIL
         if user == None:
             form = RegisterForm(request.form)
             return render_template('forms/login.html', form=form)
@@ -301,6 +310,12 @@ def book_available_times(ResourceID="0"):
     # print(ret)
     return ret
 
+@app.route('/remove_reservation/<itemType>/<itemID>', methods = ['POST'])
+def remove_reservation(itemType, itemID):
+    remove_data.remove_reservation(db, itemType, itemID, session['uid'])
+    previous_url = request.referrer
+    #print(previous_url)
+    return redirect(previous_url)
 
 @app.route('/book_classes/<ResourceID>/<ResourceDate>', methods=['POST'])
 def book_classes(ResourceID="0", ResourceDate="00:00:00"):
@@ -310,6 +325,7 @@ def book_classes(ResourceID="0", ResourceDate="00:00:00"):
                       'ResourceID': ResourceID, 'DateBookedOn': ResourceDate}
         process_data.insert_into_enrollments(db, valuesDict)
         previous_url = request.referrer
+        print(previous_url)
         return redirect(previous_url)
 
 
