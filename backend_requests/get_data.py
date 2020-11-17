@@ -20,8 +20,6 @@ def get_all_classes(db):
     r = get_dict_from_result(db_result)
     return r
     
-
-
 def get_filtered_classes(db, filter_on, filter_val):
     """
     Takes in db engine, column to filter on, value to filter to
@@ -64,3 +62,25 @@ def get_dict_from_result(db_result):
             d = {**d, **{column: value}}
         a.append(d)
     return a
+
+    def get_user_from_email(db, user_email):
+    """
+    Once User signs in, we use this function to get User ID/record from email
+    """
+    print("Getting user for email {}...".format(user_email))
+    query = "select * from User where Email='{}'".format(user_email)
+    db.engine.execute(query)
+    db_result = db.engine.execute(query)
+    results_dict_list = get_dict_from_result(db_result)
+    if not results_dict_list:  # no records matched
+        return None
+    # I return only the first [0] record from select *
+    # Since hopefully emails are unique, there should be only 1 anyway
+    return results_dict_list[0]
+
+
+def get_all_users(db):
+    """
+    Gets us all the records in the User table
+    """
+    query = "select * from User;"
