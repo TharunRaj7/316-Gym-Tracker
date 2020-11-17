@@ -93,6 +93,7 @@ def get_dict_from_result(db_result):
     Returns a list of dictionaries where each dictionary is {field:value} pairs for one row.
     """
     d, a = {}, []
+    
     for rowproxy in db_result:
         # rowproxy.items() returns an array like [(field0, value0), (field1, value1)]
         for column, value in rowproxy.items():
@@ -100,3 +101,12 @@ def get_dict_from_result(db_result):
             d = {**d, **{column: value}}
         a.append(d)
     return a
+
+def no_where_get_filtered_data(db, select, table):
+    query = "select {} from {}".format(
+        select, table)
+    db.engine.execute(query)
+    db_result = db.engine.execute(query)
+    r = get_dict_from_result(db_result)
+    return r
+
