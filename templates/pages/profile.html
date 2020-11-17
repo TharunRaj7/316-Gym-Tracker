@@ -12,7 +12,6 @@ content %}
 <p><h2 style = 'text-align: center;'>Your Equipment Reservations</h2></p><br>
 <table class="table table-bordered table-striped table-hover">
   <tr>
-    <th>ResourceID</th>
     <th>ResourceName</th>
     <th>ResourceType</th>
     <th>Date</th>
@@ -23,7 +22,7 @@ content %}
   {% for row in reservations%}
   <tr>
     <td hidden = 'true' class = "itemID">{{row['BookingID']}}
-    <td>{{row['ResourceID']}}</td>
+    <td hidden = 'true'>{{row['ResourceID']}}</td>
     <td>{{row['ResourceName']}}</td>
     <td>{{row['ResourceType']}}</td>
     <td>{{row['DateBookedOn']}}</td>
@@ -37,18 +36,17 @@ content %}
 <p><h2 style = 'text-align: center;'>Your Class Enrollments</h2></p><br>
 <table class="table table-bordered table-striped table-hover">
   <tr>
-    <th>Class ID </th> 
     <th>Class Name</th>
     <th>Date </th> 
     <th>Day</th>
     <th>Time</th>
     <th>Location</th>
     <th>EnrollmentCap</th>
-    <th>Booking</th>
+    <th>Change Enrollment</th>
   </tr>
   {% for row in enrollments%}
   <tr>
-    <td class="itemID">{{row['ClassID']}}</td>
+    <td class="itemID" hidden = 'true'>{{row['ClassID']}}</td>
     <td>{{row['ClassType']}}</td>
     <td class="classDate">{{row['ClassDate']}}</td>
     <td>{{row['ClassDay']}}</td>

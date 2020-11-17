@@ -11,7 +11,6 @@
     <div>
       <table class="table table-bordered table-striped table-hover" id = "dispTable">
         <tr>
-          <th>Class ID </th> 
           <th>Day</th>
           <th>Date </th> 
           <th>Class Name</th>
@@ -22,7 +21,7 @@
         </tr>
         {% for row in data%}
         <tr>
-          <td class="classID">{{row['ClassID']}}</td>
+          <td class="classID" hidden = 'true'>{{row['ClassID']}}</td>
           <td>{{row['ClassDay']}}</td>
           <td class="classDate">{{row['ClassDate']}}</td>
           <td>{{row['ClassType']}}</td>

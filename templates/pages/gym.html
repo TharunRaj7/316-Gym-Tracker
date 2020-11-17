@@ -11,7 +11,6 @@ content %}
 <div>
   <table id = "dispTable" class="table table-bordered table-striped table-hover">
     <tr>
-      <th>ResourceID</th>
       <th>ResourceName</th>
       <th>ResourceType</th>
       <th>Location</th>
@@ -19,7 +18,7 @@ content %}
     </tr>
     {% for row in data[1]%}
     <tr>
-      <td class = "resID">{{row['ResourceID']}}</td>
+      <td class = "resID" hidden = 'true'>{{row['ResourceID']}}</td>
       <td class = "resName">{{row['ResourceName']}}</td>
       <td class = "resType">{{row['ResourceType']}}</td>
       <td>{{row['Location']}}</td>
