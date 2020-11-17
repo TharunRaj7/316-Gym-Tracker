@@ -106,7 +106,7 @@ def brodieGym():
     brodie_resources = []
     brodie_resources.append("Brodie Equipment")
     brodie_resources.append(get_data.get_filtered_data(
-        db, "*", table="Resources", where="Location = 'Brodie'"))
+        db, "*", table="Resources", where="Location = 'Brodie' AND ResourceDisplay = 1"))
     return render_template('pages/gym.html', data=brodie_resources, loggedIn=userLoggedIn)
 
 
@@ -127,7 +127,7 @@ def wilsonGym():
     wilson_resources = []
     wilson_resources.append("Wilson Equipment")
     wilson_resources.append(get_data.get_filtered_data(
-        db, "*", table="Resources", where="Location = 'Wilson'"))
+        db, "*", table="Resources", where="Location = 'Wilson' AND ResourceDisplay = 1"))
     return render_template('pages/gym.html', data=wilson_resources, loggedIn=userLoggedIn)
 
 
