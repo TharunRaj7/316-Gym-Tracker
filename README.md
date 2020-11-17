@@ -15,10 +15,10 @@ Presenting [GymTracker](https://gymtrackerduke.herokuapp.com/) . A combined port
 
 ## Screenshots
 *GymTracker Homepage*
-![homepage](screenshots\homepage.png)
+![homepage](https://i.imgur.com/QdjOIyh.png)
 
 *Brodie Equipment*
-![brodie equipment](screenshots\brodie_equipment.png)
+![brodie equipment](https://i.imgur.com/pMep9xN.png)
 
 ## What's next?
 - Admin Management
@@ -26,10 +26,7 @@ Presenting [GymTracker](https://gymtrackerduke.herokuapp.com/) . A combined port
 
 
 ## Learn More
-![learnmore](screenshots\Boxing.gif)
-
-
-
+![learnmore](https://i.imgur.com/pxDtshk.gif)
 
 ## Running it Locally
 
